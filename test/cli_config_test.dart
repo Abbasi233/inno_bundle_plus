@@ -1,10 +1,10 @@
 import 'package:test/test.dart';
 
-import 'package:inno_bundle/managers/inno_version_manager.dart';
-import 'package:inno_bundle/models/build_type.dart';
-import 'package:inno_bundle/models/cli_configs/id_cli_config.dart';
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/cli_configs/setup_versions_cli_config.dart';
+import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
+import 'package:inno_bundle_plus/models/build_type.dart';
+import 'package:inno_bundle_plus/models/cli_configs/id_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/setup_versions_cli_config.dart';
 
 void main() {
   group('InnoBundleCliConfig.parse', () {
@@ -54,10 +54,8 @@ void main() {
       expect(InnoBundleCliConfig.parse(['--release']).type, BuildType.release);
       expect(InnoBundleCliConfig.parse(['--profile']).type, BuildType.profile);
       expect(InnoBundleCliConfig.parse(['--debug']).type, BuildType.debug);
-      expect(InnoBundleCliConfig.parse(['--profile', '--debug']).type,
-          BuildType.debug);
-      expect(InnoBundleCliConfig.parse(['--release', '--profile']).type,
-          BuildType.profile);
+      expect(InnoBundleCliConfig.parse(['--profile', '--debug']).type, BuildType.debug);
+      expect(InnoBundleCliConfig.parse(['--release', '--profile']).type, BuildType.profile);
     });
   });
 
@@ -68,8 +66,7 @@ void main() {
     });
 
     test('splits and trims the comma-separated versions list', () {
-      final c =
-          SetupVersionsCliConfig.parse(['--versions', '6.7.3, 6.6.1 ,6.4.3']);
+      final c = SetupVersionsCliConfig.parse(['--versions', '6.7.3, 6.6.1 ,6.4.3']);
       expect(c.versions, ['6.7.3', '6.6.1', '6.4.3']);
     });
   });
@@ -87,10 +84,8 @@ void main() {
   group('BuildType.fromArgs', () {
     test('debug beats profile beats release', () {
       final parser = InnoBundleCliConfig.parser;
-      expect(
-          BuildType.fromArgs(parser.parse(['--release'])), BuildType.release);
-      expect(
-          BuildType.fromArgs(parser.parse(['--profile'])), BuildType.profile);
+      expect(BuildType.fromArgs(parser.parse(['--release'])), BuildType.release);
+      expect(BuildType.fromArgs(parser.parse(['--profile'])), BuildType.profile);
       expect(BuildType.fromArgs(parser.parse(['--debug'])), BuildType.debug);
       expect(
         BuildType.fromArgs(parser.parse(['--profile', '--debug'])),

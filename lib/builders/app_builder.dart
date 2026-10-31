@@ -9,10 +9,10 @@ library;
 
 import 'dart:io';
 
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/utils/constants.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/utils/constants.dart';
 import 'package:path/path.dart' as p;
-import 'package:inno_bundle/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
 
 /// A class responsible for building the app based on the provided configuration.
 class AppBuilder {
@@ -36,8 +36,7 @@ class AppBuilder {
     final buildDir = Directory(buildDirPath);
     final versionParts = config.version.split("+");
     final buildName = versionParts[0];
-    final buildNumber =
-        versionParts.length == 1 ? "1" : versionParts.sublist(1).join("+");
+    final buildNumber = versionParts.length == 1 ? "1" : versionParts.sublist(1).join("+");
 
     if (!config.app) {
       if (!buildDir.existsSync() || buildDir.listSync().isEmpty) {

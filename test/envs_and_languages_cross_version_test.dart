@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/models/language.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/models/language.dart';
 
 import 'support/inno_version_fixture.dart';
 

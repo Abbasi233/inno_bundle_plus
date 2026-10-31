@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'package:inno_bundle/builders/app_builder.dart';
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/config.dart';
+import 'package:inno_bundle_plus/builders/app_builder.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/config.dart';
 
 import 'support/flutter_build.dart';
 import 'support/language_fixture.dart';
@@ -26,10 +26,7 @@ void main() {
       );
 
       expect(() => AppBuilder(config), isNot(throwsA(anything)));
-    },
-        skip: !Platform.isWindows
-            ? 'Windows-only: needs Flutter Windows build tooling'
-            : false);
+    }, skip: !Platform.isWindows ? 'Windows-only: needs Flutter Windows build tooling' : false);
 
     test(
       'flutter build tool produces expected windows/runner output tree',
@@ -70,9 +67,7 @@ void main() {
         );
       },
       timeout: const Timeout(Duration(minutes: 2)),
-      skip: !Platform.isWindows
-          ? 'Windows-only: needs Flutter Windows build tooling'
-          : false,
+      skip: !Platform.isWindows ? 'Windows-only: needs Flutter Windows build tooling' : false,
     );
 
     test(
@@ -93,9 +88,7 @@ void main() {
 
         expect(result.exitCode, isNot(0));
       },
-      skip: !Platform.isWindows
-          ? 'Windows-only: needs Flutter Windows build tooling'
-          : false,
+      skip: !Platform.isWindows ? 'Windows-only: needs Flutter Windows build tooling' : false,
     );
   });
 }

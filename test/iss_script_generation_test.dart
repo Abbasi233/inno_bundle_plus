@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:test/test.dart';
 
-import 'package:inno_bundle/builders/script_builder.dart';
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/config.dart';
+import 'package:inno_bundle_plus/builders/script_builder.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/config.dart';
 
 import 'support/language_fixture.dart';
 
@@ -55,8 +55,7 @@ void main() {
       );
     }
 
-    test('includes [Setup] section with id, publisher, version from config',
-        () {
+    test('includes [Setup] section with id, publisher, version from config', () {
       final config = _config(outputDir: ['tmp', 'inno_out']);
       final builder = ScriptBuilder(config, appDir);
 
@@ -69,8 +68,7 @@ void main() {
       expect(script, contains('AppPublisher=Test User'));
     });
 
-    test('includes one [Files] entry per DLL in the required-DLL allowlist',
-        () {
+    test('includes one [Files] entry per DLL in the required-DLL allowlist', () {
       final config = _config(outputDir: ['tmp', 'inno_out']);
       final builder = ScriptBuilder(config, appDir);
 
@@ -182,8 +180,7 @@ void main() {
       expect(script, isNot(contains('DestDir: "{app}\\appdata"')));
     });
 
-    test('runs app-relative exes from [Code] in list order before app launch',
-        () {
+    test('runs app-relative exes from [Code] in list order before app launch', () {
       final config = _config(
         exes: [
           {
@@ -203,8 +200,7 @@ void main() {
       final builder = ScriptBuilder(config, appDir);
       final script = builder.buildScript();
 
-      expect(
-          script, contains('Name: "exerun1"; Description: "Install second"'));
+      expect(script, contains('Name: "exerun1"; Description: "Install second"'));
       expect(script, contains('procedure RunConfiguredExes;'));
       expect(script, contains("ExpandConstant('{app}\\tools\\first.exe')"));
       expect(script, contains("ExpandConstant('{app}\\tools\\second.exe')"));
@@ -215,10 +211,8 @@ void main() {
       expect(script, contains('MB_ABORTRETRYIGNORE'));
       expect(script, contains('if CurStep = ssPostInstall then'));
       expect(script, contains('RunConfiguredExes;'));
-      final firstIdx =
-          script.indexOf("ExpandConstant('{app}\\tools\\first.exe')");
-      final secondIdx =
-          script.indexOf("ExpandConstant('{app}\\tools\\second.exe')");
+      final firstIdx = script.indexOf("ExpandConstant('{app}\\tools\\first.exe')");
+      final secondIdx = script.indexOf("ExpandConstant('{app}\\tools\\second.exe')");
       expect(firstIdx, lessThan(secondIdx));
       expect(
         script,
@@ -230,8 +224,7 @@ void main() {
       );
     });
 
-    test('copies bundled exe sources into [Files] preserving relative path',
-        () {
+    test('copies bundled exe sources into [Files] preserving relative path', () {
       final toolsDir = Directory('${tempDir.path}\\tools');
       toolsDir.createSync(recursive: true);
       final driver = File('${toolsDir.path}\\driver.exe');

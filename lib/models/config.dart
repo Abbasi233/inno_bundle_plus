@@ -17,20 +17,20 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/admin_mode.dart';
-import 'package:inno_bundle/models/build_arch.dart';
-import 'package:inno_bundle/models/build_type.dart';
-import 'package:inno_bundle/models/exe_entry.dart';
-import 'package:inno_bundle/models/dir_entry.dart';
-import 'package:inno_bundle/models/file_entry.dart';
-import 'package:inno_bundle/models/language.dart';
-import 'package:inno_bundle/models/sign_tool.dart';
-import 'package:inno_bundle/models/vcredist_mode.dart';
-import 'package:inno_bundle/utils/cli_logger.dart';
-import 'package:inno_bundle/utils/constants.dart';
-import 'package:inno_bundle/utils/functions.dart';
-import 'package:inno_bundle/utils/inno_bundle_error.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/admin_mode.dart';
+import 'package:inno_bundle_plus/models/build_arch.dart';
+import 'package:inno_bundle_plus/models/build_type.dart';
+import 'package:inno_bundle_plus/models/exe_entry.dart';
+import 'package:inno_bundle_plus/models/dir_entry.dart';
+import 'package:inno_bundle_plus/models/file_entry.dart';
+import 'package:inno_bundle_plus/models/language.dart';
+import 'package:inno_bundle_plus/models/sign_tool.dart';
+import 'package:inno_bundle_plus/models/vcredist_mode.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/utils/constants.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
+import 'package:inno_bundle_plus/utils/inno_bundle_error.dart';
 
 /// A class representing the configuration for building a Windows installer using Inno Setup.
 class Config {

@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 import 'dart:io';
 
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 
 import '../test/support/inno_versions.dart';
 
@@ -34,8 +34,7 @@ Future<void> main(List<String> args) async {
     if (!useFallback) {
       exit(1);
     }
-    stderr
-        .writeln('Falling back to pinned matrix ${fallbackMatrix.join(',')}.');
+    stderr.writeln('Falling back to pinned matrix ${fallbackMatrix.join(',')}.');
     matrix = fallbackMatrix.join(',');
   }
   // printing to stdout is the machine-readable return channel.

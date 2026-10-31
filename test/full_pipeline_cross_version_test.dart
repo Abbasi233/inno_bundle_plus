@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'package:inno_bundle/builders/script_builder.dart';
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/models/language.dart';
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/builders/script_builder.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/models/language.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 
 import 'support/flutter_build.dart';
 import 'support/inno_version_fixture.dart';
@@ -23,15 +23,13 @@ import 'support/inno_version_fixture.dart';
 /// generated Setup.exe's execute permission is Windows-only).
 
 String get demoAppReleaseDir => p.normalize(p.absolute(
-      p.joinAll(
-          [fixtureAppPath, 'build', 'windows', 'x64', 'runner', 'Release']),
+      p.joinAll([fixtureAppPath, 'build', 'windows', 'x64', 'runner', 'Release']),
     ));
 
 Future<void> main() async {
   if (!Platform.isWindows) {
     group('Full pipeline (dart run inno_bundle)', () {
-      test('end-to-end (SKIPPED — Windows-only)', () {},
-          skip: 'Windows-only: needs Flutter + Inno Setup');
+      test('end-to-end (SKIPPED — Windows-only)', () {}, skip: 'Windows-only: needs Flutter + Inno Setup');
     });
     return;
   }
@@ -69,8 +67,7 @@ Future<void> main() async {
         late Config config;
 
         setUp(() {
-          tempDir = Directory.systemTemp
-              .createTempSync('inno_pipeline_${v.version}_');
+          tempDir = Directory.systemTemp.createTempSync('inno_pipeline_${v.version}_');
           // `out` is created as needed by ISCC; no need to pre-create it.
           installDir = Directory(p.join(tempDir.path, 'install'))..createSync();
           innoExec = File(v.isccPath);
@@ -95,9 +92,7 @@ Future<void> main() async {
           if (tempDir.existsSync()) tempDir.deleteSync(recursive: true);
         });
 
-        test(
-            'end-to-end: build app, compile installer, silent install, verify, uninstall',
-            () async {
+        test('end-to-end: build app, compile installer, silent install, verify, uninstall', () async {
           // 1. Generate + compile the installer with THIS Inno version.
           final scriptFile = await ScriptBuilder(config, appDir).build();
           final compiled = await Process.run(
@@ -113,13 +108,11 @@ Future<void> main() async {
                 '--- stdout ---\n${compiled.stdout}\n--- stderr ---\n${compiled.stderr}',
           );
 
-          final expectedName =
-              '${camelCase(config.name)}-${config.arch.cpu}-${config.version}-Installer.exe';
+          final expectedName = '${camelCase(config.name)}-${config.arch.cpu}-${config.version}-Installer.exe';
           final installerExe = File(
             p.joinAll([tempDir.path, 'out', config.type.dirName, expectedName]),
           );
-          expect(installerExe.existsSync(), isTrue,
-              reason: 'Installer .exe missing: $expectedName');
+          expect(installerExe.existsSync(), isTrue, reason: 'Installer .exe missing: $expectedName');
 
           // 2. Silent install into the temp install dir.
           final install = await Process.run(
@@ -147,8 +140,7 @@ Future<void> main() async {
             reason: 'demo_app.exe not installed by Inno ${v.version} run.',
           );
           final unins000 = File(p.join(installDir.path, 'unins000.exe'));
-          expect(unins000.existsSync(), isTrue,
-              reason: 'uninstaller not created by Inno ${v.version} run.');
+          expect(unins000.existsSync(), isTrue, reason: 'uninstaller not created by Inno ${v.version} run.');
 
           // 4. Silent uninstall. Pass `/CURRENTUSER` for symmetry with the install —
           // the real demo app config sets `admin: auto`, so the uninstaller
@@ -179,8 +171,7 @@ Future<void> main() async {
             await Future<void>.delayed(const Duration(milliseconds: 200));
           }
           if (!cleaned) {
-            final leftover =
-                installDir.listSync().map((e) => p.basename(e.path)).join(', ');
+            final leftover = installDir.listSync().map((e) => p.basename(e.path)).join(', ');
             fail('Install dir not cleaned by Inno ${v.version} uninstall. '
                 'Leftover: $leftover');
           }

@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'package:inno_bundle/builders/script_builder.dart';
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/models/language.dart';
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/builders/script_builder.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/models/language.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 
 import 'support/flutter_build.dart';
 import 'support/inno_version_fixture.dart';
@@ -25,8 +25,7 @@ import 'support/inno_version_fixture.dart';
 Future<void> main() async {
   if (!Platform.isWindows) {
     group('ISS config variants against Inno versions', () {
-      test('compile (SKIPPED — Windows-only)', () {},
-          skip: 'Windows-only: needs a real Inno Setup install');
+      test('compile (SKIPPED — Windows-only)', () {}, skip: 'Windows-only: needs a real Inno Setup install');
     });
     return;
   }
@@ -49,11 +48,9 @@ Future<void> main() async {
         late File innoExec;
 
         setUp(() {
-          tempDir = Directory.systemTemp
-              .createTempSync('inno_variants_${v.version}_');
+          tempDir = Directory.systemTemp.createTempSync('inno_variants_${v.version}_');
           appDir = Directory(p.join(tempDir.path, 'app'))..createSync();
-          File(p.join(appDir.path, 'demo_app.exe'))
-              .writeAsBytesSync([0x4D, 0x5A, 0x90, 0x00]);
+          File(p.join(appDir.path, 'demo_app.exe')).writeAsBytesSync([0x4D, 0x5A, 0x90, 0x00]);
           innoExec = File(v.isccPath);
           Language.loadLanguages(v.isccPath);
         });
@@ -63,13 +60,10 @@ Future<void> main() async {
         });
 
         Config _config({Object? admin}) {
-          final pubspecJson =
-              readYaml(File(p.join(fixtureAppPath, 'pubspec.yaml')));
-          final configJson =
-              readYaml(File(p.join(fixtureAppPath, fullFixture)));
+          final pubspecJson = readYaml(File(p.join(fixtureAppPath, 'pubspec.yaml')));
+          final configJson = readYaml(File(p.join(fixtureAppPath, fullFixture)));
           if (admin != null) {
-            (configJson['inno_bundle'] as Map<String, dynamic>)['admin'] =
-                admin;
+            (configJson['inno_bundle'] as Map<String, dynamic>)['admin'] = admin;
           }
           return Config.fromJson(
             pubspecJson,
@@ -103,18 +97,15 @@ Future<void> main() async {
           );
         }
 
-        test('full config (vc_redist: download + file associations) compiles',
-            () async {
+        test('full config (vc_redist: download + file associations) compiles', () async {
           await _assertCompiles(_config(), 'full');
         });
 
-        test('admin: true compiles (compile-only, never executed on CI)',
-            () async {
+        test('admin: true compiles (compile-only, never executed on CI)', () async {
           await _assertCompiles(_config(admin: true), 'admin: true');
         });
 
-        test('admin: false compiles (compile-only, never executed on CI)',
-            () async {
+        test('admin: false compiles (compile-only, never executed on CI)', () async {
           await _assertCompiles(_config(admin: false), 'admin: false');
         });
       });

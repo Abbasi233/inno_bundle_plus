@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:inno_bundle/utils/cli_logger.dart';
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 import 'package:path/path.dart' as p;
 
 /// Manages multiple versioned Inno Setup installations under a single root
@@ -46,14 +46,12 @@ class InnoVersionManager {
   ];
 
   /// GitHub link for documentation on how to download and install Inno Setup.
-  static const innoDownloadStepLink =
-      "https://github.com/hahouari/inno_bundle/wiki/Install-Inno-Setup";
+  static const innoDownloadStepLink = "https://github.com/hahouari/inno_bundle/wiki/Install-Inno-Setup";
 
   /// Creates a manager rooted at [versionsDir].
   ///
   /// If omitted, defaults to [innoManagedVersionsDir].
-  InnoVersionManager({String? versionsDir})
-      : versionsDir = versionsDir ?? innoManagedVersionsDir;
+  InnoVersionManager({String? versionsDir}) : versionsDir = versionsDir ?? innoManagedVersionsDir;
 
   /// Returns the absolute path to `ISCC.exe` for [version], or `null` if that
   /// version is not yet installed.
@@ -72,9 +70,7 @@ class InnoVersionManager {
   /// Lists every version subfolder under [versionsDir] that contains
   /// `ISCC.exe` and is at least [minSupportedVersion].
   List<String> get installedVersions {
-    return installedVersionedIsccs(versionsDir)
-        .map((f) => p.basename(f.parent.path))
-        .toList();
+    return installedVersionedIsccs(versionsDir).map((f) => p.basename(f.parent.path)).toList();
   }
 
   /// Locates a machine-wide or per-user install of Inno Setup (`ISCC.exe`).
@@ -86,8 +82,7 @@ class InnoVersionManager {
   /// guidance link via [CliLogger] and exits if no usable install is found or
   /// it appears corrupted; otherwise returns `null`.
   static File? getMachineInnoExec({bool throwIfNotFound = true}) {
-    if (!Directory(p.joinAll(innoSysDirPath)).existsSync() &&
-        !Directory(p.joinAll(innoUserDirPath)).existsSync()) {
+    if (!Directory(p.joinAll(innoSysDirPath)).existsSync() && !Directory(p.joinAll(innoUserDirPath)).existsSync()) {
       if (throwIfNotFound) {
         CliLogger.exitError("Inno Setup 6 is not detected in your machine, "
             "checkout our docs on how to correctly install it:\n"
@@ -104,11 +99,9 @@ class InnoVersionManager {
     for (final exec in [sysExecFile, userExecFile]) {
       if (!exec.existsSync()) continue;
       final version = machineInnoVersion(exec);
-      if (version != null &&
-          compareVersions(version, minSupportedVersion) < 0) {
+      if (version != null && compareVersions(version, minSupportedVersion) < 0) {
         if (throwIfNotFound) {
-          CliLogger.exitError(
-              "Detected Inno Setup $version on your machine, but inno_bundle "
+          CliLogger.exitError("Detected Inno Setup $version on your machine, but inno_bundle "
               "supports $minSupportedVersion and newer. Install a supported "
               "version with `dart run inno_bundle:setup_versions` or check "
               "our docs:\n"
@@ -120,8 +113,7 @@ class InnoVersionManager {
     }
 
     if (throwIfNotFound) {
-      CliLogger.exitError(
-          "Inno Setup installation in your machine is corrupted "
+      CliLogger.exitError("Inno Setup installation in your machine is corrupted "
           "or incomplete, checkout our docs on how to correctly install it:\n"
           "${CliLogger.sLink(innoDownloadStepLink, level: CliLoggerLevel.two)}");
     }
@@ -237,8 +229,7 @@ class InnoVersionManager {
   /// Convenience wrapper around [ensureVersion]; returns `null` on success, or
   /// an error message describing the failure. Already-installed versions are
   /// silently skipped.
-  Future<String?> ensureDefaultVersion({String? githubToken}) =>
-      ensureVersion(defaultVersion, githubToken: githubToken);
+  Future<String?> ensureDefaultVersion({String? githubToken}) => ensureVersion(defaultVersion, githubToken: githubToken);
 
   /// Ensures [version] is downloaded, checksum verified, and extracted.
   ///
@@ -267,16 +258,13 @@ class InnoVersionManager {
     if (releaseData == null) {
       return 'Failed to fetch release info for version $version — '
               'check that the version exists.' +
-          (githubToken == null
-              ? ' Tip: set GITHUB_TOKEN (or GH_TOKEN) to avoid API rate limits.'
-              : '');
+          (githubToken == null ? ' Tip: set GITHUB_TOKEN (or GH_TOKEN) to avoid API rate limits.' : '');
     }
 
     // after Inno Setup 7 it started having 32-bit and 64-bit versions,
     // flutter only needs the 64-bit version.
     final isVersionEqualOrGreaterThan7 = version.compareTo('7.0.0') >= 0;
-    final assetName =
-        'innosetup-$version${isVersionEqualOrGreaterThan7 ? '-x64' : ''}.exe';
+    final assetName = 'innosetup-$version${isVersionEqualOrGreaterThan7 ? '-x64' : ''}.exe';
     final assets = releaseData['assets'] as List<dynamic>?;
     Map<String, dynamic>? asset;
     if (assets != null) {
@@ -293,8 +281,7 @@ class InnoVersionManager {
 
     final downloadUrl = asset['browser_download_url'] as String;
     final digest = asset['digest'] as String;
-    final expectedHash =
-        digest.startsWith('sha256:') ? digest.substring(7) : digest;
+    final expectedHash = digest.startsWith('sha256:') ? digest.substring(7) : digest;
 
     final tempDir = Directory.systemTemp;
     final installerPath = p.join(tempDir.path, assetName);
@@ -311,8 +298,7 @@ class InnoVersionManager {
       }
 
       final actualHash = await sha256HashFile(installerPath);
-      if (actualHash == null ||
-          actualHash.toLowerCase() != expectedHash.toLowerCase()) {
+      if (actualHash == null || actualHash.toLowerCase() != expectedHash.toLowerCase()) {
         File(installerPath).deleteSync();
         return 'Checksum mismatch for $version.\n'
             '  Expected: $expectedHash\n'

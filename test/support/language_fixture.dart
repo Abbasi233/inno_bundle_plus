@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:inno_bundle/models/language.dart';
+import 'package:inno_bundle_plus/models/language.dart';
 import 'package:test/test.dart';
 
 /// Creates a throwaway Inno Setup installation directory containing a couple

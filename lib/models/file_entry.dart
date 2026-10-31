@@ -28,7 +28,7 @@ library;
 
 import 'dart:io';
 
-import 'package:inno_bundle/utils/constants.dart';
+import 'package:inno_bundle_plus/utils/constants.dart';
 import 'package:path/path.dart' as p;
 
 /// Enum representing the source of the extra files to be included with the app bundle.
@@ -89,9 +89,7 @@ class FileEntry {
       if (option['required'] != null && option['required'] is! bool) {
         return "required field in inno_bundle.files entry in $configName must be a boolean or null.";
       }
-      if (option['source'] != null &&
-          (option['source'] is! String ||
-              !FileSource.literalValues.contains(option['source']))) {
+      if (option['source'] != null && (option['source'] is! String || !FileSource.literalValues.contains(option['source']))) {
         return "source field in inno_bundle.files entry in $configName must be "
             "one of ${FileSource.literalValues.join(', ')} or null.";
       }

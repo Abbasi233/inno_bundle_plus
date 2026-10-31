@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'package:inno_bundle/builders/script_builder.dart';
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/models/language.dart';
+import 'package:inno_bundle_plus/builders/script_builder.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/models/language.dart';
 
 import 'support/inno_version_fixture.dart';
 
@@ -21,8 +21,7 @@ import 'support/inno_version_fixture.dart';
 Future<void> main() async {
   if (!Platform.isWindows) {
     group('.iss compiles against each Inno Setup version', () {
-      test('ISCC compile (SKIPPED — Windows-only)', () {},
-          skip: 'Windows-only: needs a real Inno Setup install');
+      test('ISCC compile (SKIPPED — Windows-only)', () {}, skip: 'Windows-only: needs a real Inno Setup install');
     });
     return;
   }
@@ -48,13 +47,11 @@ Future<void> main() async {
         late Config config;
 
         setUp(() {
-          tempDir =
-              Directory.systemTemp.createTempSync('inno_compile_${v.version}_');
+          tempDir = Directory.systemTemp.createTempSync('inno_compile_${v.version}_');
           // A tiny fake app dir mirroring what the package expects: top-level
           // files plus directories.
           appDir = Directory(p.join(tempDir.path, 'app'))..createSync();
-          File(p.join(appDir.path, 'my_app.exe'))
-              .writeAsBytesSync([0x4D, 0x5A, 0x90, 0x00]);
+          File(p.join(appDir.path, 'my_app.exe')).writeAsBytesSync([0x4D, 0x5A, 0x90, 0x00]);
           final dataDir = Directory(p.join(appDir.path, 'data'))..createSync();
           File(p.join(dataDir.path, 'asset.txt')).writeAsStringSync('hi');
           outDir = Directory(p.join(tempDir.path, 'out'))..createSync();

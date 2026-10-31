@@ -19,7 +19,7 @@
 library;
 
 import 'package:args/args.dart';
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 
 /// An enum representing the different build types supported for the software.
 enum BuildType {

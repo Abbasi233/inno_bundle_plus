@@ -5,9 +5,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/utils/cli_logger.dart';
-import 'package:inno_bundle/utils/installer_icon.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/utils/installer_icon.dart';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 import 'package:yaml/yaml.dart';
@@ -46,10 +46,7 @@ Map<String, dynamic> yamlToMap(YamlMap yamlMap) {
 ///
 /// Example: `camelCase("hello-world_out there")` returns "HelloWorldOutThere".
 String camelCase(String value) {
-  return value
-      .split(RegExp(r'[-_]|\s'))
-      .map((word) => capitalize(word))
-      .join('');
+  return value.split(RegExp(r'[-_]|\s')).map((word) => capitalize(word)).join('');
 }
 
 /// Capitalizes the first letter of a string.
@@ -120,8 +117,7 @@ void generateEssentials(
 
   // if config file is a custom one, read 'inno_bundle' section from it,
   // otherwise, read 'inno_bundle' section from pubspec.yaml.
-  final configJson =
-      configFile == pubspecFile ? pubspecJson : readYaml(configFile);
+  final configJson = configFile == pubspecFile ? pubspecJson : readYaml(configFile);
   final inno = configJson['inno_bundle'] ?? {};
 
   // if inno_bundle essentials are already present, do nothing
@@ -143,16 +139,12 @@ void generateEssentials(
   // at this point it is user's responsibility to make sure [id] is valid.
   if (cliConfig.generateAppId && inno['id'] == null) {
     const uuid = Uuid();
-    final appId = cliConfig.appIdNamespace != null
-        ? uuid.v5(Namespace.url.value, cliConfig.appIdNamespace)
-        : uuid.v1();
+    final appId = cliConfig.appIdNamespace != null ? uuid.v5(Namespace.url.value, cliConfig.appIdNamespace) : uuid.v1();
     innoInsertLine += 1;
     lines.insert(innoInsertLine, "  id: $appId");
   }
 
-  if (cliConfig.generatePublisher &&
-      pubspecJson['maintainer'] == null &&
-      inno['publisher'] == null) {
+  if (cliConfig.generatePublisher && pubspecJson['maintainer'] == null && inno['publisher'] == null) {
     innoInsertLine += 1;
     final publisher = getSystemUserName() ?? "Unknown Publisher";
     lines.insert(innoInsertLine, "  publisher: $publisher");
@@ -190,8 +182,7 @@ Future<String?> sha256HashFile(String filePath) async {
       runInShell: true,
     );
     if (result.exitCode != 0) return null;
-    final lines =
-        (result.stdout as String).split('\n').map((l) => l.trim()).toList();
+    final lines = (result.stdout as String).split('\n').map((l) => l.trim()).toList();
     for (final line in lines) {
       if (RegExp(r'^[a-fA-F0-9]{64}$').hasMatch(line)) return line;
     }
@@ -203,8 +194,7 @@ Future<String?> sha256HashFile(String filePath) async {
 
 /// Retrieves the GitHub token from environment variables.
 String? get gitHubToken {
-  return Platform.environment['GITHUB_TOKEN'] ??
-      Platform.environment['GH_TOKEN'];
+  return Platform.environment['GITHUB_TOKEN'] ?? Platform.environment['GH_TOKEN'];
 }
 
 /// Asserts that the current operating system is Windows, else exits with an error.

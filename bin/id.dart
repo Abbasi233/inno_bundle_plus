@@ -5,8 +5,8 @@
 /// namespace so the same name always yields the same namespaced UUID.
 import 'dart:io';
 
-import 'package:inno_bundle/models/cli_configs/id_cli_config.dart';
-import 'package:inno_bundle/utils/constants.dart';
+import 'package:inno_bundle_plus/models/cli_configs/id_cli_config.dart';
+import 'package:inno_bundle_plus/utils/constants.dart';
 import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();

@@ -1,3 +1,3 @@
-# Inno bundle examples
+# Inno Bundle Plus examples
 
 - [demo_app](https://github.com/hahouari/inno_bundle/tree/dev/example/demo_app)

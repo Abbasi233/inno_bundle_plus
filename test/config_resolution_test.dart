@@ -2,15 +2,15 @@ import 'package:test/test.dart';
 
 import 'dart:io';
 
-import 'package:inno_bundle/models/admin_mode.dart';
-import 'package:inno_bundle/models/build_arch.dart';
-import 'package:inno_bundle/models/build_type.dart';
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/models/sign_tool.dart';
-import 'package:inno_bundle/models/vcredist_mode.dart';
-import 'package:inno_bundle/utils/constants.dart';
-import 'package:inno_bundle/utils/inno_bundle_error.dart';
+import 'package:inno_bundle_plus/models/admin_mode.dart';
+import 'package:inno_bundle_plus/models/build_arch.dart';
+import 'package:inno_bundle_plus/models/build_type.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/models/sign_tool.dart';
+import 'package:inno_bundle_plus/models/vcredist_mode.dart';
+import 'package:inno_bundle_plus/utils/constants.dart';
+import 'package:inno_bundle_plus/utils/inno_bundle_error.dart';
 import 'package:path/path.dart' as p;
 
 import 'support/language_fixture.dart';
@@ -21,8 +21,7 @@ void main() {
     test('uses the default config file when it exists', () {
       final tempDir = Directory.systemTemp.createTempSync('inno_resolve_');
       addTearDown(() => tempDir.deleteSync(recursive: true));
-      final defaultConfigFile =
-          File(p.join(tempDir.path, defaultConfigFileName));
+      final defaultConfigFile = File(p.join(tempDir.path, defaultConfigFileName));
       defaultConfigFile.writeAsStringSync('');
 
       final resolved = Config.resolveConfigFile(
@@ -34,8 +33,7 @@ void main() {
       expect(resolved, same(defaultConfigFile));
     });
 
-    test('falls back to pubspec.yaml when the default config file is absent',
-        () {
+    test('falls back to pubspec.yaml when the default config file is absent', () {
       final pubspecFile = File('pubspec.yaml');
       final resolved = Config.resolveConfigFile(
         configPath: null,
@@ -212,15 +210,12 @@ void main() {
     });
 
     test('accepts admin as the string "auto"', () {
-      expect(
-          _from(inno: {'id': validId, 'admin': 'auto'}).admin, AdminMode.auto);
+      expect(_from(inno: {'id': validId, 'admin': 'auto'}).admin, AdminMode.auto);
     });
 
     test('accepts admin as a bool', () {
-      expect(_from(inno: {'id': validId, 'admin': false}).admin,
-          AdminMode.nonAdmin);
-      expect(
-          _from(inno: {'id': validId, 'admin': true}).admin, AdminMode.admin);
+      expect(_from(inno: {'id': validId, 'admin': false}).admin, AdminMode.nonAdmin);
+      expect(_from(inno: {'id': validId, 'admin': true}).admin, AdminMode.admin);
     });
 
     test('rejects an invalid vc_redist option', () {
@@ -231,12 +226,9 @@ void main() {
     });
 
     test('accepts vc_redist as the string "download" and as a bool', () {
-      expect(_from(inno: {'id': validId, 'vc_redist': 'download'}).vcRedist,
-          VcRedistMode.download);
-      expect(_from(inno: {'id': validId, 'vc_redist': true}).vcRedist,
-          VcRedistMode.bundle);
-      expect(_from(inno: {'id': validId, 'vc_redist': false}).vcRedist,
-          VcRedistMode.none);
+      expect(_from(inno: {'id': validId, 'vc_redist': 'download'}).vcRedist, VcRedistMode.download);
+      expect(_from(inno: {'id': validId, 'vc_redist': true}).vcRedist, VcRedistMode.bundle);
+      expect(_from(inno: {'id': validId, 'vc_redist': false}).vcRedist, VcRedistMode.none);
     });
 
     test('rejects an invalid arch option', () {
@@ -248,8 +240,7 @@ void main() {
 
     test('accepts a valid arch option', () {
       expect(_from(inno: {'id': validId, 'arch': 'x64'}).arch, BuildArch.x64);
-      expect(_from(inno: {'id': validId, 'arch': 'x64_compatible'}).arch,
-          BuildArch.x64Compatible);
+      expect(_from(inno: {'id': validId, 'arch': 'x64_compatible'}).arch, BuildArch.x64Compatible);
     });
 
     test('rejects a non-list languages option', () {
@@ -378,8 +369,7 @@ void main() {
     });
 
     test('rejects an installer icon that does not exist', () {
-      final missing =
-          'missing_icon_${DateTime.now().microsecondsSinceEpoch}.ico';
+      final missing = 'missing_icon_${DateTime.now().microsecondsSinceEpoch}.ico';
       expect(
         () => _from(inno: {'id': validId, 'installer_icon': missing}),
         throwsA(isA<InnoBundleError>()),
@@ -394,8 +384,7 @@ void main() {
     });
 
     test('accepts a sign_tool as a string command', () {
-      final config =
-          _from(inno: {'id': validId, 'sign_tool': r'signtool.exe $p'});
+      final config = _from(inno: {'id': validId, 'sign_tool': r'signtool.exe $p'});
       expect(config.signTool, isA<SignTool>());
       expect(config.signTool!.command, r'signtool.exe $p');
     });
@@ -409,8 +398,7 @@ void main() {
       expect(config.files.map((f) => f.name), ['a.dll', 'b.dll']);
     });
 
-    test('splits comma-separated file extension associations and drops blanks',
-        () {
+    test('splits comma-separated file extension associations and drops blanks', () {
       final config = _from(inno: {
         'id': validId,
         'file_extensions_associations': ['.foo,.bar', '  '],

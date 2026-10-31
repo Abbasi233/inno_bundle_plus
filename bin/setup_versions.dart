@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:inno_bundle/models/cli_configs/setup_versions_cli_config.dart';
-import 'package:inno_bundle/managers/inno_version_manager.dart';
-import 'package:inno_bundle/utils/cli_logger.dart';
-import 'package:inno_bundle/utils/constants.dart';
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/models/cli_configs/setup_versions_cli_config.dart';
+import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/utils/constants.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 
 Future<void> main(List<String> arguments) async {
   assertOsWindows();

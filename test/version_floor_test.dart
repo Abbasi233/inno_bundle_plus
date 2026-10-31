@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:inno_bundle/managers/inno_version_manager.dart';
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
@@ -21,8 +21,7 @@ void main() {
     });
 
     void seedVersion(String version) {
-      final dir = Directory(p.join(tempDir.path, version))
-        ..createSync(recursive: true);
+      final dir = Directory(p.join(tempDir.path, version))..createSync(recursive: true);
       File(p.join(dir.path, 'ISCC.exe')).writeAsStringSync('fake');
     }
 
@@ -36,9 +35,7 @@ void main() {
       );
     });
 
-    test(
-        'installedVersionedIsccs skips below-floor versions without deleting them',
-        () {
+    test('installedVersionedIsccs skips below-floor versions without deleting them', () {
       seedVersion('6.3.3');
       seedVersion('6.4.0');
       seedVersion('6.5.4');
@@ -64,10 +61,8 @@ void main() {
       expect(manager.installedVersions, ['6.5.4']);
     });
 
-    test('ensureVersion refuses a below-floor version without hitting network',
-        () async {
-      final error = await InnoVersionManager(versionsDir: tempDir.path)
-          .ensureVersion('6.3.3');
+    test('ensureVersion refuses a below-floor version without hitting network', () async {
+      final error = await InnoVersionManager(versionsDir: tempDir.path).ensureVersion('6.3.3');
       expect(error, contains(InnoVersionManager.minSupportedVersion));
     });
   });

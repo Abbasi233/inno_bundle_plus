@@ -11,7 +11,7 @@
 /// every field has a sensible default that matches invoking the command with
 /// no arguments.
 import 'package:args/args.dart';
-import 'package:inno_bundle/models/build_type.dart';
+import 'package:inno_bundle_plus/models/build_type.dart';
 
 /// The fully resolved set of CLI options for the `inno_bundle` command.
 class InnoBundleCliConfig {
@@ -155,8 +155,7 @@ class InnoBundleCliConfig {
       help: "Print env variables and exit",
     )
     ..addFlag('hf', defaultsTo: true, help: 'Print header and footer')
-    ..addFlag('list-languages',
-        negatable: false, help: 'List all supported languages and exit')
+    ..addFlag('list-languages', negatable: false, help: 'List all supported languages and exit')
     ..addFlag('help', abbr: 'h', negatable: false, help: 'Print help and exit');
 
   /// Returns the usage message describing the accepted options.

@@ -6,7 +6,7 @@
 /// that setup: which versions to install and the output framing. See the
 /// `bin/setup_versions.dart` entry point for how these are consumed.
 import 'package:args/args.dart';
-import 'package:inno_bundle/managers/inno_version_manager.dart';
+import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
 
 /// The resolved CLI options for the `setup_versions` command.
 class SetupVersionsCliConfig {
@@ -62,10 +62,7 @@ class SetupVersionsCliConfig {
   factory SetupVersionsCliConfig.parse(List<String> arguments) {
     final parsedArgs = parser.parse(arguments);
     return SetupVersionsCliConfig(
-      versions: (parsedArgs['versions'] as String)
-          .split(',')
-          .map((v) => v.trim())
-          .toList(),
+      versions: (parsedArgs['versions'] as String).split(',').map((v) => v.trim()).toList(),
       hf: parsedArgs['hf'] as bool,
       help: parsedArgs['help'] as bool,
     );

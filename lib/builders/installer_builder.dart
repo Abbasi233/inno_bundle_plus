@@ -9,8 +9,8 @@ library;
 
 import 'dart:io';
 
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
 
 /// A class responsible for building the installer using Inno Setup.
 class InstallerBuilder {

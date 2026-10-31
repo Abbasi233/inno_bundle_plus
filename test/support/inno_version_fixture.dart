@@ -9,7 +9,7 @@
 /// setup_versions has run, or non-Windows dev boxes).
 library;
 
-import 'package:inno_bundle/managers/inno_version_manager.dart';
+import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
 
 import 'inno_versions.dart';
 

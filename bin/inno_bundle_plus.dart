@@ -5,17 +5,17 @@
 /// builders described in the `builders/` package.
 import 'dart:io';
 
-import 'package:inno_bundle/builders/app_builder.dart';
-import 'package:inno_bundle/builders/installer_builder.dart';
-import 'package:inno_bundle/builders/script_builder.dart';
-import 'package:inno_bundle/models/cli_configs/inno_bundle_cli_config.dart';
-import 'package:inno_bundle/managers/inno_version_manager.dart';
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/models/language.dart';
-import 'package:inno_bundle/utils/cli_logger.dart';
-import 'package:inno_bundle/utils/constants.dart';
-import 'package:inno_bundle/utils/functions.dart';
-import 'package:inno_bundle/utils/inno_bundle_error.dart';
+import 'package:inno_bundle_plus/builders/app_builder.dart';
+import 'package:inno_bundle_plus/builders/installer_builder.dart';
+import 'package:inno_bundle_plus/builders/script_builder.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/models/language.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/utils/constants.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
+import 'package:inno_bundle_plus/utils/inno_bundle_error.dart';
 
 /// Builds the application using the provided configuration.
 ///

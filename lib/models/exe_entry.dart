@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:inno_bundle/models/exe_failure_mode.dart';
+import 'package:inno_bundle_plus/models/exe_failure_mode.dart';
 import 'package:path/path.dart' as p;
 
 class ExeEntry {
@@ -68,8 +68,7 @@ class ExeEntry {
             "must be a boolean or null.";
       }
       final optional = option['optional'] == true;
-      if (optional &&
-          (option['description'] == null || option['description'] is! String)) {
+      if (optional && (option['description'] == null || option['description'] is! String)) {
         return "description field is required when optional is true in "
             "inno_bundle.exes entry in $configName.";
       }
@@ -85,9 +84,7 @@ class ExeEntry {
         return "status_msg field in inno_bundle.exes entry in $configName "
             "must be a string or null.";
       }
-      if (option['on_failure'] != null &&
-          (option['on_failure'] is! String ||
-              !ExeFailureMode.literalValues.contains(option['on_failure']))) {
+      if (option['on_failure'] != null && (option['on_failure'] is! String || !ExeFailureMode.literalValues.contains(option['on_failure']))) {
         return "on_failure field in inno_bundle.exes entry in $configName "
             "must be one of ${ExeFailureMode.literalValues.join(', ')} or null.";
       }
@@ -160,10 +157,7 @@ class ExeEntry {
   String get filesDestName => p.basename(source!);
 
   static String _asInnoRelative(String relative) {
-    final parts = relative
-        .split(RegExp(r'[\\/]+'))
-        .where((part) => part.isNotEmpty && part != '.')
-        .toList();
+    final parts = relative.split(RegExp(r'[\\/]+')).where((part) => part.isNotEmpty && part != '.').toList();
     return parts.join('\\');
   }
 }

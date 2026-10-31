@@ -25,8 +25,8 @@
 library;
 
 import 'dart:io';
-import 'package:inno_bundle/utils/inno_bundle_error.dart';
-import 'package:inno_bundle/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/utils/inno_bundle_error.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
 import 'package:path/path.dart' as p;
 
 /// A language supported by the Inno Setup installer.
@@ -68,10 +68,7 @@ class Language {
     }
     // rest of the languages are in the Languages directory.
     if (languagesDir.existsSync()) {
-      languagesDir
-          .listSync()
-          .where((file) => file is File && file.path.endsWith(".isl"))
-          .forEach((file) {
+      languagesDir.listSync().where((file) => file is File && file.path.endsWith(".isl")).forEach((file) {
         final fileName = p.basename(file.path);
         final fileStem = p.basenameWithoutExtension(fileName);
         languages.add(Language._(fileStem, "Languages\\${fileName}"));
@@ -133,8 +130,7 @@ class Language {
   /// Throws an [InnoBundleError] if [loadLanguages] has not been called yet.
   static List<Language> get all {
     if (_cachedLangs.isEmpty) {
-      throw InnoBundleError(
-          'Language.loadLanguages() must be called before accessing Language.all.');
+      throw InnoBundleError('Language.loadLanguages() must be called before accessing Language.all.');
     }
     return _cachedLangs;
   }

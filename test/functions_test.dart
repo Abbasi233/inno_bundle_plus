@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 
 void main() {
   group('camelCase', () {

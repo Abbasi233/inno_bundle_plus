@@ -22,15 +22,15 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-import 'package:inno_bundle/models/admin_mode.dart';
-import 'package:inno_bundle/models/config.dart';
-import 'package:inno_bundle/models/exe_entry.dart';
-import 'package:inno_bundle/models/exe_failure_mode.dart';
-import 'package:inno_bundle/models/file_entry.dart';
-import 'package:inno_bundle/models/vcredist_mode.dart';
-import 'package:inno_bundle/utils/cli_logger.dart';
-import 'package:inno_bundle/utils/constants.dart';
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/models/admin_mode.dart';
+import 'package:inno_bundle_plus/models/config.dart';
+import 'package:inno_bundle_plus/models/exe_entry.dart';
+import 'package:inno_bundle_plus/models/exe_failure_mode.dart';
+import 'package:inno_bundle_plus/models/file_entry.dart';
+import 'package:inno_bundle_plus/models/vcredist_mode.dart';
+import 'package:inno_bundle_plus/utils/cli_logger.dart';
+import 'package:inno_bundle_plus/utils/constants.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 
 /// A class responsible for generating the Inno Setup Script (ISS) file for the installer.
 class ScriptBuilder {

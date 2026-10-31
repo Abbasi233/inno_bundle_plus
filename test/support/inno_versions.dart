@@ -21,8 +21,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:inno_bundle/managers/inno_version_manager.dart';
-import 'package:inno_bundle/utils/functions.dart';
+import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
+import 'package:inno_bundle_plus/utils/functions.dart';
 
 /// Pinned fallback matrix, used by `tool/print_matrix.dart --fallback` (and
 /// therefore the cross-version workflow) when the live GitHub fetch is
@@ -35,15 +35,12 @@ const fallbackMatrix = ['6.4.3', '6.5.4', '6.6.1', '6.7.3', '7.0.2', '7.1.0'];
 /// never covers a version the package refuses to use. Tunable via the
 /// `INNO_MATRIX_FLOOR` env var to widen/narrow coverage without editing code.
 /// Must be a semver like `6.4.0`.
-String get matrixFloor =>
-    Platform.environment['INNO_MATRIX_FLOOR'] ??
-    InnoVersionManager.minSupportedVersion;
+String get matrixFloor => Platform.environment['INNO_MATRIX_FLOOR'] ?? InnoVersionManager.minSupportedVersion;
 
 /// Ceiling (exclusive) of the matrix minor range.
 ///
 /// Tunable via the `INNO_MATRIX_CEILING` env var.
-String get matrixCeiling =>
-    Platform.environment['INNO_MATRIX_CEILING'] ?? '8.0.0';
+String get matrixCeiling => Platform.environment['INNO_MATRIX_CEILING'] ?? '8.0.0';
 
 /// Per-process cache of the fetched matrix so repeated [fetchMatrixVersions]
 /// calls within one `dart test` run only hit GitHub once.
@@ -96,8 +93,7 @@ List<String> latestPatchPerMinor(List<String> versions) {
   }
 
   final result = <String>[];
-  final minorKeys = byMinor.keys.toList()
-    ..sort((a, b) => compareVersions(a, b));
+  final minorKeys = byMinor.keys.toList()..sort((a, b) => compareVersions(a, b));
   for (final minorKey in minorKeys) {
     final patches = byMinor[minorKey]!..sort((a, b) => compareVersions(a, b));
     // Keep only the highest patch of this minor. A `.0` patch is NOT special:
@@ -114,8 +110,7 @@ List<String> latestPatchPerMinor(List<String> versions) {
 bool _hasMatchingAsset(Map<String, dynamic> release) {
   final tag = (release['tag_name'] as String?) ?? '';
   // tag looks like `is-6_4_3`
-  final version =
-      tag.startsWith('is-') ? tag.substring(3).replaceAll('_', '.') : null;
+  final version = tag.startsWith('is-') ? tag.substring(3).replaceAll('_', '.') : null;
   if (version == null || !RegExp(r'^\d+\.\d+\.\d+$').hasMatch(version)) {
     return false;
   }
