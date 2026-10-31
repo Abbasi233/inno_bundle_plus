@@ -10,6 +10,8 @@
 /// [parser], but they can also be constructed directly (as in tests) because
 /// every field has a sensible default that matches invoking the command with
 /// no arguments.
+library;
+
 import 'package:args/args.dart';
 import 'package:inno_bundle_plus/models/build_type.dart';
 

@@ -3,6 +3,8 @@
 /// This is a small standalone tool that produces an App ID (a GUID) for use
 /// as the `inno_bundle_plus.id` value in a config file. It accepts an optional `--ns`
 /// namespace so the same name always yields the same namespaced UUID.
+library;
+
 import 'dart:io';
 
 import 'package:inno_bundle_plus/models/cli_configs/id_cli_config.dart';

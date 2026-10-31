@@ -1,3 +1,6 @@
+## 1.0.1
+- refactor for lints
+
 ## 1.0.0
 
 - `inno_bundle_plus` is a fork of [`inno_bundle`](https://github.com/hahouari/inno_bundle). This release carries that project forward under this package, together with installer features that are not yet available upstream. Further development continues here, so those features can ship without waiting on the upstream release cycle. Report issues and send pull requests to [this repository](https://github.com/Abbasi233/inno_bundle_plus).
