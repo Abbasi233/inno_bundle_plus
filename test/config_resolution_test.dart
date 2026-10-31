@@ -5,12 +5,12 @@ import 'dart:io';
 import 'package:inno_bundle_plus/models/admin_mode.dart';
 import 'package:inno_bundle_plus/models/build_arch.dart';
 import 'package:inno_bundle_plus/models/build_type.dart';
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/models/config.dart';
 import 'package:inno_bundle_plus/models/sign_tool.dart';
 import 'package:inno_bundle_plus/models/vcredist_mode.dart';
 import 'package:inno_bundle_plus/utils/constants.dart';
-import 'package:inno_bundle_plus/utils/inno_bundle_error.dart';
+import 'package:inno_bundle_plus/utils/inno_bundle_plus_error.dart';
 import 'package:path/path.dart' as p;
 
 import 'support/language_fixture.dart';
@@ -38,7 +38,7 @@ void main() {
       final resolved = Config.resolveConfigFile(
         configPath: null,
         pubspecFile: pubspecFile,
-        defaultConfigFile: File('inno_bundle.yaml'),
+        defaultConfigFile: File('inno_bundle_plus.yaml'),
       );
 
       expect(resolved, same(pubspecFile));
@@ -48,7 +48,7 @@ void main() {
       final resolved = Config.resolveConfigFile(
         configPath: 'custom_config.yaml',
         pubspecFile: File('pubspec.yaml'),
-        defaultConfigFile: File('inno_bundle.yaml'),
+        defaultConfigFile: File('inno_bundle_plus.yaml'),
       );
 
       expect(resolved.path, 'custom_config.yaml');
@@ -59,7 +59,7 @@ void main() {
       final resolved = Config.resolveConfigFile(
         configPath: 'pubspec.yaml',
         pubspecFile: pubspecFile,
-        defaultConfigFile: File('inno_bundle.yaml'),
+        defaultConfigFile: File('inno_bundle_plus.yaml'),
       );
 
       expect(resolved, same(pubspecFile));
@@ -75,7 +75,7 @@ void main() {
         'maintainer': 'Test User',
       };
       final innoJson = {
-        'inno_bundle': {
+        'inno_bundle_plus': {
           'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff',
         },
       };
@@ -83,7 +83,7 @@ void main() {
       final config = Config.fromJson(
         json,
         innoJson,
-        cliConfig: InnoBundleCliConfig(),
+        cliConfig: InnoBundlePlusCliConfig(),
         pubspecFile: File(''),
         configFile: File(''),
         innoExec: File('test_iscc.exe'),
@@ -97,17 +97,17 @@ void main() {
       expect(config.installer, true);
     });
 
-    test('rejects missing inno_bundle section', () {
+    test('rejects missing inno_bundle_plus section', () {
       expect(
         () => Config.fromJson(
           {'name': 'x'},
           {},
-          cliConfig: InnoBundleCliConfig(),
+          cliConfig: InnoBundlePlusCliConfig(),
           pubspecFile: File(''),
           configFile: File(''),
           innoExec: File('test_iscc.exe'),
         ),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -115,13 +115,13 @@ void main() {
       expect(
         () => Config.fromJson(
           {'name': 'x'},
-          {'inno_bundle': {}},
-          cliConfig: InnoBundleCliConfig(),
+          {'inno_bundle_plus': {}},
+          cliConfig: InnoBundlePlusCliConfig(),
           pubspecFile: File(''),
           configFile: File(''),
           innoExec: File('test_iscc.exe'),
         ),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -130,14 +130,14 @@ void main() {
         () => Config.fromJson(
           {'name': 'x'},
           {
-            'inno_bundle': {'id': 'not-a-uuid'}
+            'inno_bundle_plus': {'id': 'not-a-uuid'}
           },
-          cliConfig: InnoBundleCliConfig(),
+          cliConfig: InnoBundlePlusCliConfig(),
           pubspecFile: File(''),
           configFile: File(''),
           innoExec: File('test_iscc.exe'),
         ),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -146,14 +146,14 @@ void main() {
         () => Config.fromJson(
           {},
           {
-            'inno_bundle': {'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff'}
+            'inno_bundle_plus': {'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff'}
           },
-          cliConfig: InnoBundleCliConfig(),
+          cliConfig: InnoBundlePlusCliConfig(),
           pubspecFile: File(''),
           configFile: File(''),
           innoExec: File('test_iscc.exe'),
         ),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -162,16 +162,16 @@ void main() {
         () => Config.fromJson(
           {'name': 'x'},
           {
-            'inno_bundle': {
+            'inno_bundle_plus': {
               'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff',
             },
           },
-          cliConfig: InnoBundleCliConfig(),
+          cliConfig: InnoBundlePlusCliConfig(),
           pubspecFile: File(''),
           configFile: File(''),
           innoExec: File('test_iscc.exe'),
         ),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
   });
@@ -182,7 +182,7 @@ void main() {
     Config _from({
       Map<String, dynamic>? json,
       Map<String, dynamic>? inno,
-      InnoBundleCliConfig cliConfig = const InnoBundleCliConfig(),
+      InnoBundlePlusCliConfig cliConfig = const InnoBundlePlusCliConfig(),
     }) {
       return Config.fromJson(
         json ??
@@ -193,7 +193,7 @@ void main() {
               'maintainer': 'Test User',
             },
         {
-          'inno_bundle': inno ?? {'id': validId}
+          'inno_bundle_plus': inno ?? {'id': validId}
         },
         cliConfig: cliConfig,
         pubspecFile: File(''),
@@ -205,7 +205,7 @@ void main() {
     test('rejects an invalid admin option', () {
       expect(
         () => _from(inno: {'id': validId, 'admin': 'root'}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -221,7 +221,7 @@ void main() {
     test('rejects an invalid vc_redist option', () {
       expect(
         () => _from(inno: {'id': validId, 'vc_redist': 'sideload'}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -234,7 +234,7 @@ void main() {
     test('rejects an invalid arch option', () {
       expect(
         () => _from(inno: {'id': validId, 'arch': 'x32'}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -246,7 +246,7 @@ void main() {
     test('rejects a non-list languages option', () {
       expect(
         () => _from(inno: {'id': validId, 'languages': 'English'}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -256,14 +256,14 @@ void main() {
           'id': validId,
           'languages': ['Klingon']
         }),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
     test('rejects a non-list files option', () {
       expect(
         () => _from(inno: {'id': validId, 'files': 'my.dll'}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -309,7 +309,7 @@ void main() {
             {'path': 'a.exe', 'source': 'b.exe'},
           ],
         }),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -321,7 +321,7 @@ void main() {
             {'path': 'a.exe', 'optional': true},
           ],
         }),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -333,14 +333,14 @@ void main() {
             {'path': 'a.exe', 'on_failure': 'explode'},
           ],
         }),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
     test('rejects a non-list exes option', () {
       expect(
         () => _from(inno: {'id': validId, 'exes': 'a.exe'}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -352,7 +352,7 @@ void main() {
             {'name': 'x.dll'},
           ],
         }),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -364,7 +364,7 @@ void main() {
             {'path': 'x.dll', 'source': 'elsewhere'},
           ],
         }),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -372,14 +372,14 @@ void main() {
       final missing = 'missing_icon_${DateTime.now().microsecondsSinceEpoch}.ico';
       expect(
         () => _from(inno: {'id': validId, 'installer_icon': missing}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
     test('rejects a sign_tool with neither name nor command', () {
       expect(
         () => _from(inno: {'id': validId, 'sign_tool': <String, dynamic>{}}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -408,10 +408,10 @@ void main() {
       expect(config.excludedFileExts, ['.old']);
     });
 
-    test('rejects an inno_bundle name that is not a valid file name', () {
+    test('rejects an inno_bundle_plus name that is not a valid file name', () {
       expect(
         () => _from(inno: {'id': validId, 'name': 'bad<name>'}),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
@@ -422,13 +422,13 @@ void main() {
           'description': 'A test app.',
           'maintainer': 'Test User',
         }),
-        throwsA(isA<InnoBundleError>()),
+        throwsA(isA<InnoBundlePlusError>()),
       );
     });
 
     test('cli --app-version overrides the config version', () {
       final config = _from(
-        cliConfig: const InnoBundleCliConfig(appVersion: '2.0.0'),
+        cliConfig: const InnoBundlePlusCliConfig(appVersion: '2.0.0'),
       );
       expect(config.version, '2.0.0');
     });

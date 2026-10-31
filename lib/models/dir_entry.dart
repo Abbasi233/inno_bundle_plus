@@ -14,19 +14,19 @@ class DirEntry {
     if (option is String) return null;
     if (option is Map<String, dynamic>) {
       if (option['source'] == null) {
-        return "source field is missing from inno_bundle.dirs entry in pubspec.yaml, "
+        return "source field is missing from inno_bundle_plus.dirs entry in pubspec.yaml, "
             "it must be a string.";
       }
       if (option['source'] is! String) {
-        return "source field in inno_bundle.dirs entry in pubspec.yaml must be a string.";
+        return "source field in inno_bundle_plus.dirs entry in pubspec.yaml must be a string.";
       }
       if (option['destination'] != null && option['destination'] is! String) {
-        return "destination field in inno_bundle.dirs entry in pubspec.yaml must be a string or null.";
+        return "destination field in inno_bundle_plus.dirs entry in pubspec.yaml must be a string or null.";
       }
       return null;
     }
 
-    return "inno_bundle.dirs attribute is invalid in pubspec.yaml.";
+    return "inno_bundle_plus.dirs attribute is invalid in pubspec.yaml.";
   }
 
   factory DirEntry.fromJson(dynamic json) {

@@ -4,12 +4,12 @@
 /// The `bin/` entry points catch this and call [CliLogger.exitError] to print
 /// the message and exit with a non-zero code. Tests catch it directly to
 /// assert validation failures without forking a process.
-class InnoBundleError extends Error {
+class InnoBundlePlusError extends Error {
   /// Human-readable description of what went wrong.
   final String message;
 
   /// Creates an error with the given [message].
-  InnoBundleError(this.message);
+  InnoBundlePlusError(this.message);
 
   @override
   String toString() => message;

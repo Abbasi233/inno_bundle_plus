@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 import 'package:inno_bundle_plus/builders/script_builder.dart';
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/models/config.dart';
 import 'package:inno_bundle_plus/models/language.dart';
 import 'package:inno_bundle_plus/utils/functions.dart';
@@ -71,14 +71,14 @@ Future<void> main() async {
               'maintainer': 'Test User',
             },
             {
-              'inno_bundle': {
+              'inno_bundle_plus': {
                 'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff',
                 'publisher': 'Test User',
                 'admin': 'auto',
                 'arch': 'x64_compatible',
               },
             },
-            cliConfig: InnoBundleCliConfig(),
+            cliConfig: InnoBundlePlusCliConfig(),
             pubspecFile: File(''),
             configFile: File(''),
             outputDir: [tempDir.path, 'out'],

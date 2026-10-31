@@ -1,7 +1,7 @@
-/// The `inno_bundle id` command-line entry point.
+/// The `inno_bundle_plus id` command-line entry point.
 ///
 /// This is a small standalone tool that produces an App ID (a GUID) for use
-/// as the `inno_bundle.id` value in a config file. It accepts an optional `--ns`
+/// as the `inno_bundle_plus.id` value in a config file. It accepts an optional `--ns`
 /// namespace so the same name always yields the same namespaced UUID.
 import 'dart:io';
 

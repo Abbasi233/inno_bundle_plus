@@ -25,7 +25,7 @@
 library;
 
 import 'dart:io';
-import 'package:inno_bundle_plus/utils/inno_bundle_error.dart';
+import 'package:inno_bundle_plus/utils/inno_bundle_plus_error.dart';
 import 'package:inno_bundle_plus/utils/cli_logger.dart';
 import 'package:path/path.dart' as p;
 
@@ -98,12 +98,12 @@ class Language {
   static String? validateConfig(dynamic option, {required String configName}) {
     if (option == null) return null;
     if (option is! String) {
-      return "an entry in inno_bundle.languages attribute is invalid "
+      return "an entry in inno_bundle_plus.languages attribute is invalid "
           "in $configName, expected a string, got $option.";
     }
     final language = Language.getByNameOrNull(option);
     if (language == null) {
-      return "an option in inno_bundle.languages attribute is invalid "
+      return "an option in inno_bundle_plus.languages attribute is invalid "
           "in $configName, language `$option` is not supported.";
     }
 
@@ -127,10 +127,10 @@ class Language {
 
   /// All supported languages for the selected Inno Setup install.
   ///
-  /// Throws an [InnoBundleError] if [loadLanguages] has not been called yet.
+  /// Throws an [InnoBundlePlusError] if [loadLanguages] has not been called yet.
   static List<Language> get all {
     if (_cachedLangs.isEmpty) {
-      throw InnoBundleError('Language.loadLanguages() must be called before accessing Language.all.');
+      throw InnoBundlePlusError('Language.loadLanguages() must be called before accessing Language.all.');
     }
     return _cachedLangs;
   }

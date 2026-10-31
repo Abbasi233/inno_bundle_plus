@@ -37,60 +37,60 @@ class ExeEntry {
       final hasPath = option.containsKey('path');
       final hasSource = option.containsKey('source');
       if (hasPath && hasSource) {
-        return "inno_bundle.exes entry in $configName must not set both "
+        return "inno_bundle_plus.exes entry in $configName must not set both "
             "path and source.";
       }
       if (!hasPath && !hasSource) {
-        return "inno_bundle.exes entry in $configName must set path or source.";
+        return "inno_bundle_plus.exes entry in $configName must set path or source.";
       }
       if (hasPath) {
         if (option['path'] is! String) {
-          return "path field in inno_bundle.exes entry in $configName "
+          return "path field in inno_bundle_plus.exes entry in $configName "
               "must be a string.";
         }
         if (option['destination'] != null) {
-          return "destination field in inno_bundle.exes entry in $configName "
+          return "destination field in inno_bundle_plus.exes entry in $configName "
               "is only valid with source, not path.";
         }
       }
       if (hasSource) {
         if (option['source'] is! String) {
-          return "source field in inno_bundle.exes entry in $configName "
+          return "source field in inno_bundle_plus.exes entry in $configName "
               "must be a string.";
         }
         if (option['destination'] != null && option['destination'] is! String) {
-          return "destination field in inno_bundle.exes entry in $configName "
+          return "destination field in inno_bundle_plus.exes entry in $configName "
               "must be a string or null.";
         }
       }
       if (option['optional'] != null && option['optional'] is! bool) {
-        return "optional field in inno_bundle.exes entry in $configName "
+        return "optional field in inno_bundle_plus.exes entry in $configName "
             "must be a boolean or null.";
       }
       final optional = option['optional'] == true;
       if (optional && (option['description'] == null || option['description'] is! String)) {
         return "description field is required when optional is true in "
-            "inno_bundle.exes entry in $configName.";
+            "inno_bundle_plus.exes entry in $configName.";
       }
       if (option['description'] != null && option['description'] is! String) {
-        return "description field in inno_bundle.exes entry in $configName "
+        return "description field in inno_bundle_plus.exes entry in $configName "
             "must be a string or null.";
       }
       if (option['args'] != null && option['args'] is! String) {
-        return "args field in inno_bundle.exes entry in $configName "
+        return "args field in inno_bundle_plus.exes entry in $configName "
             "must be a string or null.";
       }
       if (option['status_msg'] != null && option['status_msg'] is! String) {
-        return "status_msg field in inno_bundle.exes entry in $configName "
+        return "status_msg field in inno_bundle_plus.exes entry in $configName "
             "must be a string or null.";
       }
       if (option['on_failure'] != null && (option['on_failure'] is! String || !ExeFailureMode.literalValues.contains(option['on_failure']))) {
-        return "on_failure field in inno_bundle.exes entry in $configName "
+        return "on_failure field in inno_bundle_plus.exes entry in $configName "
             "must be one of ${ExeFailureMode.literalValues.join(', ')} or null.";
       }
       return null;
     }
-    return "inno_bundle.exes attribute is invalid in $configName.";
+    return "inno_bundle_plus.exes attribute is invalid in $configName.";
   }
 
   factory ExeEntry.fromJson(dynamic json) {

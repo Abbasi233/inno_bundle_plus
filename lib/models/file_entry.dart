@@ -76,27 +76,27 @@ class FileEntry {
     }
     if (option is Map<String, dynamic>) {
       if (option['path'] == null) {
-        return "path field is missing from inno_bundle.files entry in $configName, "
+        return "path field is missing from inno_bundle_plus.files entry in $configName, "
             "it must be a string.";
       }
       final path = option['path'];
       if (path is! String) {
-        return "path field in inno_bundle.files entry in $configName must be a string.";
+        return "path field in inno_bundle_plus.files entry in $configName must be a string.";
       }
       if (option['name'] != null && option['name'] is! String) {
-        return "name field in inno_bundle.files entry in $configName must be a string or null.";
+        return "name field in inno_bundle_plus.files entry in $configName must be a string or null.";
       }
       if (option['required'] != null && option['required'] is! bool) {
-        return "required field in inno_bundle.files entry in $configName must be a boolean or null.";
+        return "required field in inno_bundle_plus.files entry in $configName must be a boolean or null.";
       }
       if (option['source'] != null && (option['source'] is! String || !FileSource.literalValues.contains(option['source']))) {
-        return "source field in inno_bundle.files entry in $configName must be "
+        return "source field in inno_bundle_plus.files entry in $configName must be "
             "one of ${FileSource.literalValues.join(', ')} or null.";
       }
       return null;
     }
 
-    return "inno_bundle.files attribute is invalid in $configName.";
+    return "inno_bundle_plus.files attribute is invalid in $configName.";
   }
 
   /// Parse [FileSource] from string or null, default to [FileSource.project]

@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/utils/cli_logger.dart';
 import 'package:inno_bundle_plus/utils/installer_icon.dart';
 import 'package:path/path.dart' as p;
@@ -103,7 +103,7 @@ Map<String, dynamic> readYaml(File yamlFile) {
 void generateEssentials(
   File pubspecFile,
   File configFile,
-  InnoBundleCliConfig cliConfig,
+  InnoBundlePlusCliConfig cliConfig,
 ) {
   // if neither app id nor publisher is to be generated, do nothing
   if (!cliConfig.generateAppId && !cliConfig.generatePublisher) return;
@@ -115,23 +115,25 @@ void generateEssentials(
         'the given path does not exist.');
   }
 
-  // if config file is a custom one, read 'inno_bundle' section from it,
-  // otherwise, read 'inno_bundle' section from pubspec.yaml.
+  // if config file is a custom one, read 'inno_bundle_plus' section from it,
+  // otherwise, read 'inno_bundle_plus' section from pubspec.yaml.
   final configJson = configFile == pubspecFile ? pubspecJson : readYaml(configFile);
-  final inno = configJson['inno_bundle'] ?? {};
+  final inno = configJson['inno_bundle_plus'] ?? configJson['inno_bundle'] ?? {};
 
-  // if inno_bundle essentials are already present, do nothing
+  // if inno_bundle_plus essentials are already present, do nothing
   if (inno['id'] != null || inno['publisher'] != null) return;
 
   final lines = configFile.readAsLinesSync();
-  var innoInsertLine = lines.indexWhere((l) => l.startsWith("inno_bundle:"));
+  var innoInsertLine = lines.indexWhere(
+    (l) => l.startsWith("inno_bundle_plus:") || l.startsWith("inno_bundle:"),
+  );
 
-  // if inno_bundle section is not found, add it at the end of the file
+  // if inno_bundle_plus section is not found, add it at the end of the file
   if (innoInsertLine == -1) {
     // if the last line is not empty, add an empty line before the new section
     if (lines.last.trim().isNotEmpty) lines.add("");
 
-    lines.add("inno_bundle:");
+    lines.add("inno_bundle_plus:");
     innoInsertLine = lines.length - 1;
   }
 

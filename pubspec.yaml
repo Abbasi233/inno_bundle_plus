@@ -9,7 +9,7 @@ topics:
   - installer
   - tool
   - inno
-  - inno setup
+  - inno-setup
 
 screenshots:
   - description: Inno Bundle Plus CLI tool

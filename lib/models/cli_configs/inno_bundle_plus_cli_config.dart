@@ -1,4 +1,4 @@
-/// Holds every CLI option accepted by the `inno_bundle` command.
+/// Holds every CLI option accepted by the `inno_bundle_plus` command.
 ///
 /// In this package a single set of command-line flags drives both what the
 /// command should *do* (install Inno Setup, generate essentials, print env
@@ -6,15 +6,15 @@
 /// sign tool, build type, ...). Because those two concerns share one flag
 /// surface, they are modeled as a single object rather than separate classes.
 ///
-/// Instances are normally produced by [InnoBundleCliArgs.parse] on top of
+/// Instances are normally produced by [InnoBundlePlusCliArgs.parse] on top of
 /// [parser], but they can also be constructed directly (as in tests) because
 /// every field has a sensible default that matches invoking the command with
 /// no arguments.
 import 'package:args/args.dart';
 import 'package:inno_bundle_plus/models/build_type.dart';
 
-/// The fully resolved set of CLI options for the `inno_bundle` command.
-class InnoBundleCliConfig {
+/// The fully resolved set of CLI options for the `inno_bundle_plus` command.
+class InnoBundlePlusCliConfig {
   /// Which build type to produce (`release`, `profile` or `debug`).
   ///
   /// Sets the [BuildType] used when invoking the Flutter build, which in turn
@@ -48,7 +48,7 @@ class InnoBundleCliConfig {
   /// Whether to make sure Inno Setup is installed before building.
   ///
   /// Downloads and extracts the default Inno Setup version under
-  /// `~/.inno_bundle/versions` via [InnoVersionManager] when no Inno
+  /// `~/.inno_bundle_plus/versions` via [InnoVersionManager] when no Inno
   /// Setup install is detected. The install is skipped if one is already
   /// present (managed or system-wide).
   final bool installInnoSetup;
@@ -87,7 +87,7 @@ class InnoBundleCliConfig {
   ///
   /// Every option defaults to the same behaviour as invoking the command with
   /// no arguments, so a bare `InnoBundleCliArgs()` is a valid default config.
-  const InnoBundleCliConfig({
+  const InnoBundlePlusCliConfig({
     this.type = BuildType.release,
     this.app = true,
     this.installer = true,
@@ -119,7 +119,7 @@ class InnoBundleCliConfig {
     ..addFlag(
       'install-inno',
       defaultsTo: true,
-      help: 'Install Inno Setup under ~/.inno_bundle/versions if not '
+      help: 'Install Inno Setup under ~/.inno_bundle_plus/versions if not '
           'already installed',
     )
     ..addFlag(
@@ -163,14 +163,14 @@ class InnoBundleCliConfig {
     return "${parser.usage}\n";
   }
 
-  /// Parses the given [arguments] into an [InnoBundleCliConfig].
+  /// Parses the given [arguments] into an [InnoBundlePlusCliConfig].
   ///
   /// Build-type precedence (release > profile > debug) is delegated to
   /// [BuildType.fromArgs]; every other field is read straight off the parsed
   /// results.
-  factory InnoBundleCliConfig.parse(List<String> arguments) {
+  factory InnoBundlePlusCliConfig.parse(List<String> arguments) {
     final parsedArgs = parser.parse(arguments);
-    return InnoBundleCliConfig(
+    return InnoBundlePlusCliConfig(
       type: BuildType.fromArgs(parsedArgs),
       app: parsedArgs['app'],
       installer: parsedArgs['installer'],

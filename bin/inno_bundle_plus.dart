@@ -1,4 +1,4 @@
-/// The `inno_bundle` command-line entry point.
+/// The `inno_bundle_plus` command-line entry point.
 ///
 /// Its role is to turn user-facing command-line flags plus a config file into
 /// a finished Windows installer, chaining the app, script and installer
@@ -8,14 +8,14 @@ import 'dart:io';
 import 'package:inno_bundle_plus/builders/app_builder.dart';
 import 'package:inno_bundle_plus/builders/installer_builder.dart';
 import 'package:inno_bundle_plus/builders/script_builder.dart';
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
 import 'package:inno_bundle_plus/models/config.dart';
 import 'package:inno_bundle_plus/models/language.dart';
 import 'package:inno_bundle_plus/utils/cli_logger.dart';
 import 'package:inno_bundle_plus/utils/constants.dart';
 import 'package:inno_bundle_plus/utils/functions.dart';
-import 'package:inno_bundle_plus/utils/inno_bundle_error.dart';
+import 'package:inno_bundle_plus/utils/inno_bundle_plus_error.dart';
 
 /// Builds the application using the provided configuration.
 ///
@@ -41,14 +41,14 @@ Future<void> _buildInstaller(Config config, File scriptFile) async {
   await builder.build();
 }
 
-/// Entry point of the `inno_bundle` command.
+/// Entry point of the `inno_bundle_plus` command.
 ///
 /// Walks the whole build pipeline from the parsed arguments: resolve the
 /// config, generate missing essentials, ensure Inno Setup is installed, then
 /// produce the app and its installer. Every step is gated by the flags modeled
-/// in [InnoBundleCliConfig].
+/// in [InnoBundlePlusCliConfig].
 void main(List<String> arguments) async {
-  final cliConfig = InnoBundleCliConfig.parse(arguments);
+  final cliConfig = InnoBundlePlusCliConfig.parse(arguments);
 
   if (cliConfig.hf) print(START_MESSAGE);
 
@@ -66,7 +66,7 @@ void main(List<String> arguments) async {
   );
 
   // Resolve which Inno Setup will be used (managed under
-  // ~/.inno_bundle/versions or a system-wide install).
+  // ~/.inno_bundle_plus/versions or a system-wide install).
   File? innoExec = InnoVersionManager.resolveInnoExec();
 
   if (cliConfig.installInnoSetup && cliConfig.installer && innoExec == null) {
@@ -80,7 +80,7 @@ void main(List<String> arguments) async {
 
   if (innoExec == null) {
     CliLogger.exitError('Inno Setup is not detected in your machine, '
-        'use --install-inno or run `dart run inno_bundle:setup_versions` to '
+        'use --install-inno or run `dart run inno_bundle_plus:setup_versions` to '
         'install it.');
   }
 
@@ -93,7 +93,7 @@ void main(List<String> arguments) async {
   late final Config config;
   try {
     config = Config.fromFile(pubspecFile, configFile, innoExec, cliConfig);
-  } on InnoBundleError catch (e) {
+  } on InnoBundlePlusError catch (e) {
     CliLogger.exitError(e.message);
   }
 
@@ -108,7 +108,7 @@ void main(List<String> arguments) async {
     final appBuildDir = await _buildApp(config);
     final scriptFile = await _buildScript(config, appBuildDir);
     await _buildInstaller(config, scriptFile);
-  } on InnoBundleError catch (e) {
+  } on InnoBundlePlusError catch (e) {
     CliLogger.exitError(e.message);
   }
   CliLogger.flushDeferred();

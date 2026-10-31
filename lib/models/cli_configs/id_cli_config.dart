@@ -1,7 +1,7 @@
 /// Represents the CLI options accepted by the `id` command.
 ///
 /// The `id` command is a tiny utility that prints a GUID to stdout for use as
-/// an `inno_bundle.id`. This class is what translates the user-supplied
+/// an `inno_bundle_plus.id`. This class is what translates the user-supplied
 /// arguments into the values [IdCliArgs.parse] hands back to the entry point.
 ///
 /// Instances are normally built via [IdCliArgs.parse] on top of [parser], but

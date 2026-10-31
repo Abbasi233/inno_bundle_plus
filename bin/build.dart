@@ -2,7 +2,7 @@ import 'package:inno_bundle_plus/utils/cli_logger.dart';
 
 import 'inno_bundle_plus.dart' as build;
 
-/// Run to build installer, this is a shortcut to the main function in inno_bundle.dart
+/// Run to build installer, this is a shortcut to the main function in inno_bundle_plus.dart
 ///
 /// This is kept for backwards compatibility.
 void main(List<String> arguments) async {

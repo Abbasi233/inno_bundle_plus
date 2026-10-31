@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 import 'package:inno_bundle_plus/builders/app_builder.dart';
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/models/config.dart';
 
 import 'support/flutter_build.dart';
@@ -17,9 +17,9 @@ void main() {
       final config = Config.fromJson(
         {'name': 'x', 'description': 'x', 'version': '1.0', 'maintainer': 'x'},
         {
-          'inno_bundle': {'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff'}
+          'inno_bundle_plus': {'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff'}
         },
-        cliConfig: InnoBundleCliConfig(),
+        cliConfig: InnoBundlePlusCliConfig(),
         pubspecFile: File(''),
         configFile: File(''),
         innoExec: File('test_iscc.exe'),
@@ -39,11 +39,11 @@ void main() {
             'maintainer': 'Hocine Abdellatif Houari',
           },
           {
-            'inno_bundle': {
+            'inno_bundle_plus': {
               'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff',
             },
           },
-          cliConfig: InnoBundleCliConfig(),
+          cliConfig: InnoBundlePlusCliConfig(),
           pubspecFile: File(p.join(fixtureAppPath, 'pubspec.yaml')),
           configFile: File(p.join(fixtureAppPath, 'pubspec.yaml')),
           innoExec: File('test_iscc.exe'),

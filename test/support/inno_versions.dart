@@ -154,7 +154,7 @@ Future<List<String>> fetchMatrixVersions({
   final client = HttpClient();
   try {
     final request = await client.getUrl(url);
-    request.headers.set('User-Agent', 'inno_bundle');
+    request.headers.set('User-Agent', 'inno_bundle_plus');
     request.headers.set('Accept', 'application/json');
     if (token != null && token.isNotEmpty) {
       request.headers.set('Authorization', 'Bearer $token');

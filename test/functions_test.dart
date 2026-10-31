@@ -42,7 +42,7 @@ void main() {
       final file = File(p.join(tempDir.path, 'config.yaml'));
       file.writeAsStringSync('''
 name: demo_app
-inno_bundle:
+inno_bundle_plus:
   id: 5ec949d0-0582-1e06-b073-b5d1161f6fff
   languages:
     - English
@@ -55,7 +55,7 @@ inno_bundle:
 
       final map = readYaml(file);
       expect(map['name'], 'demo_app');
-      final inno = map['inno_bundle'] as Map<String, dynamic>;
+      final inno = map['inno_bundle_plus'] as Map<String, dynamic>;
       expect(inno['languages'], ['English', 'French']);
       final nested = inno['nested'] as Map<String, dynamic>;
       expect(nested['list'], ['one', 'two']);
