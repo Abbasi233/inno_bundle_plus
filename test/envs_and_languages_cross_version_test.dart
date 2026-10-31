@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/models/config.dart';
 import 'package:inno_bundle_plus/models/language.dart';
 
@@ -11,7 +11,7 @@ import 'support/inno_version_fixture.dart';
 
 /// Per-version "so on" coverage: verifies that
 ///  - `config.toEnvironmentVariables()` emits a stable, complete env-var set
-///    across every matrix version — the same set `dart run inno_bundle --envs`
+///    across every matrix version — the same set `dart run inno_bundle_plus --envs`
 ///    prints, asserted here directly against the pinned `innoExec` without
 ///    going through a CLI subprocess, and
 ///  - `Language.loadLanguages(<version>/ISCC.exe)` discovers the language
@@ -22,8 +22,7 @@ import 'support/inno_version_fixture.dart';
 Future<void> main() async {
   if (!Platform.isWindows) {
     group('Envs & languages across Inno versions', () {
-      test('envs & languages (SKIPPED — Windows-only)', () {},
-          skip: 'Windows-only: needs Inno Setup on disk');
+      test('envs & languages (SKIPPED — Windows-only)', () {}, skip: 'Windows-only: needs Inno Setup on disk');
     });
     return;
   }
@@ -80,14 +79,14 @@ Future<void> main() async {
               'maintainer': 'Hocine Abdellatif Houari',
             },
             {
-              'inno_bundle': {
+              'inno_bundle_plus': {
                 'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff',
                 'publisher': 'Hocine Abdellatif Houari',
                 'admin': 'auto',
                 'arch': 'x64_compatible',
               },
             },
-            cliConfig: InnoBundleCliConfig(),
+            cliConfig: InnoBundlePlusCliConfig(),
             pubspecFile: File('pubspec.yaml'),
             configFile: File('pubspec.yaml'),
             innoExec: File(v.isccPath),
@@ -97,8 +96,7 @@ Future<void> main() async {
         test('Language.loadLanguages discovers >= 1 language file', () {
           Language.loadLanguages(v.isccPath);
           final names = Language.all.map((l) => l.name).toSet();
-          expect(names, contains('English'),
-              reason: 'Every Inno release ships Default.isl (= English).');
+          expect(names, contains('English'), reason: 'Every Inno release ships Default.isl (= English).');
           expect(names.length, greaterThanOrEqualTo(1));
           // Each declared language must point at a real .isl file inside this
           // exact version's install dir (catches version-specific churn).
@@ -113,20 +111,14 @@ Future<void> main() async {
           }
         });
 
-        test('toEnvironmentVariables() emits a stable, complete env-var set',
-            () {
+        test('toEnvironmentVariables() emits a stable, complete env-var set', () {
           final envs = config.toEnvironmentVariables();
-          final keys = envs
-              .split('\n')
-              .where((l) => l.contains('='))
-              .map((l) => l.substring(0, l.indexOf('=')).trim())
-              .toSet();
+          final keys = envs.split('\n').where((l) => l.contains('=')).map((l) => l.substring(0, l.indexOf('=')).trim()).toSet();
           for (final key in expectedEnvKeys) {
             expect(
               keys,
               contains(key),
-              reason:
-                  'Missing env key $key in toEnvironmentVariables() for Inno ${v.version}',
+              reason: 'Missing env key $key in toEnvironmentVariables() for Inno ${v.version}',
             );
           }
         });

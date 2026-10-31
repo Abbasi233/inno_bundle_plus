@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:test/test.dart';
 
 import 'package:inno_bundle_plus/builders/script_builder.dart';
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/models/config.dart';
 
 import 'support/language_fixture.dart';
@@ -40,13 +40,13 @@ void main() {
           'maintainer': 'Test User',
         },
         {
-          'inno_bundle': {
+          'inno_bundle_plus': {
             'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff',
             if (dirs != null) 'dirs': dirs,
             if (exes != null) 'exes': exes,
           },
         },
-        cliConfig: InnoBundleCliConfig(),
+        cliConfig: InnoBundlePlusCliConfig(),
         pubspecFile: File(''),
         configFile: File(''),
         outputDir: outputDir,

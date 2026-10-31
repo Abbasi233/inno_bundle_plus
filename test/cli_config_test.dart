@@ -3,13 +3,13 @@ import 'package:test/test.dart';
 import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
 import 'package:inno_bundle_plus/models/build_type.dart';
 import 'package:inno_bundle_plus/models/cli_configs/id_cli_config.dart';
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/models/cli_configs/setup_versions_cli_config.dart';
 
 void main() {
-  group('InnoBundleCliConfig.parse', () {
+  group('InnoBundlePlusCliConfig.parse', () {
     test('defaults match invoking the command with no arguments', () {
-      final c = InnoBundleCliConfig.parse([]);
+      final c = InnoBundlePlusCliConfig.parse([]);
       expect(c.type, BuildType.release);
       expect(c.app, isTrue);
       expect(c.installer, isTrue);
@@ -22,7 +22,7 @@ void main() {
     });
 
     test('reads flag overrides', () {
-      final c = InnoBundleCliConfig.parse([
+      final c = InnoBundlePlusCliConfig.parse([
         '--app-version',
         '2.0.0',
         '--no-app',
@@ -51,11 +51,11 @@ void main() {
     });
 
     test('build-type precedence: debug beats profile beats release', () {
-      expect(InnoBundleCliConfig.parse(['--release']).type, BuildType.release);
-      expect(InnoBundleCliConfig.parse(['--profile']).type, BuildType.profile);
-      expect(InnoBundleCliConfig.parse(['--debug']).type, BuildType.debug);
-      expect(InnoBundleCliConfig.parse(['--profile', '--debug']).type, BuildType.debug);
-      expect(InnoBundleCliConfig.parse(['--release', '--profile']).type, BuildType.profile);
+      expect(InnoBundlePlusCliConfig.parse(['--release']).type, BuildType.release);
+      expect(InnoBundlePlusCliConfig.parse(['--profile']).type, BuildType.profile);
+      expect(InnoBundlePlusCliConfig.parse(['--debug']).type, BuildType.debug);
+      expect(InnoBundlePlusCliConfig.parse(['--profile', '--debug']).type, BuildType.debug);
+      expect(InnoBundlePlusCliConfig.parse(['--release', '--profile']).type, BuildType.profile);
     });
   });
 
@@ -83,7 +83,7 @@ void main() {
 
   group('BuildType.fromArgs', () {
     test('debug beats profile beats release', () {
-      final parser = InnoBundleCliConfig.parser;
+      final parser = InnoBundlePlusCliConfig.parser;
       expect(BuildType.fromArgs(parser.parse(['--release'])), BuildType.release);
       expect(BuildType.fromArgs(parser.parse(['--profile'])), BuildType.profile);
       expect(BuildType.fromArgs(parser.parse(['--debug'])), BuildType.debug);

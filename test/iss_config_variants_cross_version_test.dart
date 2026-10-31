@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 import 'package:inno_bundle_plus/builders/script_builder.dart';
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/models/config.dart';
 import 'package:inno_bundle_plus/models/language.dart';
 import 'package:inno_bundle_plus/utils/functions.dart';
@@ -39,7 +39,7 @@ Future<void> main() async {
       return;
     }
 
-    const fullFixture = 'inno_bundle.full.yaml';
+    const fullFixture = 'inno_bundle_plus.full.yaml';
 
     for (final v in installed) {
       group('Inno ${v.version}', () {
@@ -63,12 +63,12 @@ Future<void> main() async {
           final pubspecJson = readYaml(File(p.join(fixtureAppPath, 'pubspec.yaml')));
           final configJson = readYaml(File(p.join(fixtureAppPath, fullFixture)));
           if (admin != null) {
-            (configJson['inno_bundle'] as Map<String, dynamic>)['admin'] = admin;
+            (configJson['inno_bundle_plus'] as Map<String, dynamic>)['admin'] = admin;
           }
           return Config.fromJson(
             pubspecJson,
             configJson,
-            cliConfig: InnoBundleCliConfig(),
+            cliConfig: InnoBundlePlusCliConfig(),
             pubspecFile: File(p.join(fixtureAppPath, 'pubspec.yaml')),
             configFile: File(p.join(fixtureAppPath, fullFixture)),
             outputDir: [tempDir.path, 'out'],

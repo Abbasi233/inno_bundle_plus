@@ -1,8 +1,8 @@
 /// The `setup_versions` command manages versioned Inno Setup installations.
 ///
-/// Inno_bundle can test against multiple Inno Setup versions, each installed
+/// Inno_bundle_plus can test against multiple Inno Setup versions, each installed
 /// into its own folder under the package's managed versions directory
-/// (`~/.inno_bundle/versions`). This class models the arguments that drive
+/// (`~/.inno_bundle_plus/versions`). This class models the arguments that drive
 /// that setup: which versions to install and the output framing. See the
 /// `bin/setup_versions.dart` entry point for how these are consumed.
 import 'package:args/args.dart';
@@ -51,8 +51,8 @@ class SetupVersionsCliConfig {
   String helpMessage() {
     return "${parser.usage}\n"
         '\nExamples:'
-        '\n  dart run inno_bundle:setup_versions'
-        '\n  dart run inno_bundle:setup_versions --versions 6.7.3,6.6.1\n';
+        '\n  dart run inno_bundle_plus:setup_versions'
+        '\n  dart run inno_bundle_plus:setup_versions --versions 6.7.3,6.6.1\n';
   }
 
   /// Parses the given [arguments] into a [SetupVersionsCliConfig].

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:test/test.dart';
 
 import 'package:inno_bundle_plus/models/language.dart';
-import 'package:inno_bundle_plus/utils/inno_bundle_error.dart';
+import 'package:inno_bundle_plus/utils/inno_bundle_plus_error.dart';
 
 void main() {
   late Directory tempDir;
@@ -25,7 +25,7 @@ void main() {
   });
 
   test('throws when accessed before loadLanguages', () {
-    expect(() => Language.all, throwsA(isA<InnoBundleError>()));
+    expect(() => Language.all, throwsA(isA<InnoBundlePlusError>()));
   });
 
   test('loads Default + Languages/*.isl from the installer directory', () {

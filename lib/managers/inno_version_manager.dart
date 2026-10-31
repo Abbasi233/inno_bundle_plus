@@ -26,10 +26,10 @@ class InnoVersionManager {
   static const String defaultVersion = '6.7.3';
 
   /// Root directory where the package manages its versioned Inno Setup installs
-  /// (`~/.inno_bundle/versions`).
+  /// (`~/.inno_bundle_plus/versions`).
   static final String innoManagedVersionsDir = p.join(
     getHomeDir(),
-    '.inno_bundle',
+    '.inno_bundle_plus',
     'versions',
   );
 
@@ -101,9 +101,9 @@ class InnoVersionManager {
       final version = machineInnoVersion(exec);
       if (version != null && compareVersions(version, minSupportedVersion) < 0) {
         if (throwIfNotFound) {
-          CliLogger.exitError("Detected Inno Setup $version on your machine, but inno_bundle "
+          CliLogger.exitError("Detected Inno Setup $version on your machine, but inno_bundle_plus "
               "supports $minSupportedVersion and newer. Install a supported "
-              "version with `dart run inno_bundle:setup_versions` or check "
+              "version with `dart run inno_bundle_plus:setup_versions` or check "
               "our docs:\n"
               "${CliLogger.sLink(innoDownloadStepLink, level: CliLoggerLevel.two)}");
         }
@@ -187,7 +187,7 @@ class InnoVersionManager {
     final client = HttpClient();
     try {
       final request = await client.getUrl(Uri.parse(url));
-      request.headers.set('User-Agent', 'inno_bundle');
+      request.headers.set('User-Agent', 'inno_bundle_plus');
       request.headers.set('Accept', 'application/json');
       if (githubToken != null && githubToken.isNotEmpty) {
         request.headers.set('Authorization', 'Bearer $githubToken');
@@ -210,7 +210,7 @@ class InnoVersionManager {
     final client = HttpClient();
     try {
       final request = await client.getUrl(Uri.parse(url));
-      request.headers.set('User-Agent', 'inno_bundle');
+      request.headers.set('User-Agent', 'inno_bundle_plus');
       final response = await request.close();
       if (response.statusCode != 200) {
         throw HttpException('HTTP ${response.statusCode}');
@@ -241,7 +241,7 @@ class InnoVersionManager {
   }) async {
     if (compareVersions(version, minSupportedVersion) < 0) {
       return 'Inno Setup $version is below the minimum supported version '
-          '($minSupportedVersion) of inno_bundle and would never be used. '
+          '($minSupportedVersion) of inno_bundle_plus and would never be used. '
           'Install $minSupportedVersion or newer.';
     }
 

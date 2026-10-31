@@ -71,15 +71,14 @@ class SignTool {
   }) {
     if (option == null || option is String) return null;
     if (option is Map<String, dynamic>) {
-      if ((signToolName ?? option['name']) == null &&
-          (signToolCommand ?? option['command']) == null) {
-        return "inno_bundle.sign_tool in $configName is expected to be "
+      if ((signToolName ?? option['name']) == null && (signToolCommand ?? option['command']) == null) {
+        return "inno_bundle_plus.sign_tool in $configName is expected to be "
             "of type String or to at least have name or command fields.";
       }
       return null;
     }
 
-    return "inno_bundle.sign_tool attribute is invalid in $configName.";
+    return "inno_bundle_plus.sign_tool attribute is invalid in $configName.";
   }
 
   /// Parses configuration option to the desired [SignTool].
@@ -90,9 +89,7 @@ class SignTool {
     String? signToolParams,
   }) {
     if (option == null) {
-      if (signToolName != null ||
-          signToolCommand != null ||
-          signToolParams != null) {
+      if (signToolName != null || signToolCommand != null || signToolParams != null) {
         return SignTool(
           name: signToolName ?? "InnoBundleTool",
           command: signToolCommand ?? "",

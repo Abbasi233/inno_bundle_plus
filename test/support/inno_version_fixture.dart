@@ -86,7 +86,7 @@ Future<String?> skipReasonIfEmpty(List<InstalledInnoVersion> versions) async {
   final csv = matrix.join(',');
   return 'Skipped: no matrix Inno installs under '
       '"${InnoVersionManager.innoManagedVersionsDir}". Run:\n'
-      '  dart run inno_bundle:setup_versions --versions $csv';
+      '  dart run inno_bundle_plus:setup_versions --versions $csv';
 }
 
 /// Reset cached installs between tests when the environment changes

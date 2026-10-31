@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 import 'package:inno_bundle_plus/builders/script_builder.dart';
-import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_cli_config.dart';
+import 'package:inno_bundle_plus/models/cli_configs/inno_bundle_plus_cli_config.dart';
 import 'package:inno_bundle_plus/models/config.dart';
 import 'package:inno_bundle_plus/models/language.dart';
 import 'package:inno_bundle_plus/utils/functions.dart';
@@ -28,7 +28,7 @@ String get demoAppReleaseDir => p.normalize(p.absolute(
 
 Future<void> main() async {
   if (!Platform.isWindows) {
-    group('Full pipeline (dart run inno_bundle)', () {
+    group('Full pipeline (dart run inno_bundle_plus)', () {
       test('end-to-end (SKIPPED — Windows-only)', () {}, skip: 'Windows-only: needs Flutter + Inno Setup');
     });
     return;
@@ -42,7 +42,7 @@ Future<void> main() async {
   final skipReason = await skipReasonIfEmpty(installed);
 
   if (installed.isEmpty) {
-    group('Full pipeline (dart run inno_bundle)', () {
+    group('Full pipeline (dart run inno_bundle_plus)', () {
       test('end-to-end (SKIPPED)', () {}, skip: skipReason);
     });
     return;
@@ -58,7 +58,7 @@ Future<void> main() async {
     appDir = Directory(demoAppReleaseDir);
   });
 
-  group('Full pipeline (dart run inno_bundle)', () {
+  group('Full pipeline (dart run inno_bundle_plus)', () {
     for (final v in installed) {
       group('Inno ${v.version}', () {
         late Directory tempDir;
@@ -82,7 +82,7 @@ Future<void> main() async {
             pubspecFile,
             pubspecFile,
             innoExec,
-            InnoBundleCliConfig(),
+            InnoBundlePlusCliConfig(),
             outputDir: [tempDir.path, 'out'],
             baseDir: Directory(p.absolute(fixtureAppPath)),
           );
