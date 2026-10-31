@@ -6,6 +6,8 @@
 ///
 /// Instances are normally built via [IdCliArgs.parse] on top of [parser], but
 /// the constructor accepts plain values too.
+library;
+
 import 'package:args/args.dart';
 
 /// The fully resolved CLI options for the `id` command.

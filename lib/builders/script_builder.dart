@@ -405,7 +405,7 @@ $failureCheck
   }
 
   String _removeOldExtCommand(String fileExt) {
-    final (_, __, regLocationName) = _extCommandParts(fileExt);
+    final regLocationName = _extCommandParts(fileExt).$3;
     return 'Root: HKA; Subkey: "Software\\Classes\\$regLocationName"; Flags: deletekey';
   }
 

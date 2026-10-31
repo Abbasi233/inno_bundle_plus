@@ -3,6 +3,8 @@
 /// Its role is to turn user-facing command-line flags plus a config file into
 /// a finished Windows installer, chaining the app, script and installer
 /// builders described in the `builders/` package.
+library;
+
 import 'dart:io';
 
 import 'package:inno_bundle_plus/builders/app_builder.dart';

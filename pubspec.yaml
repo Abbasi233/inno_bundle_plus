@@ -1,7 +1,7 @@
 name: inno_bundle_plus
 description: CLI tool for automating Windows installer creation using Inno Setup.
 maintainer: Furkan Abbasioğlu
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/Abbasi233/inno_bundle_plus
 repository: https://github.com/Abbasi233/inno_bundle_plus
 topics:

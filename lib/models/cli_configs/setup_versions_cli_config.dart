@@ -5,6 +5,8 @@
 /// (`~/.inno_bundle_plus/versions`). This class models the arguments that drive
 /// that setup: which versions to install and the output framing. See the
 /// `bin/setup_versions.dart` entry point for how these are consumed.
+library;
+
 import 'package:args/args.dart';
 import 'package:inno_bundle_plus/managers/inno_version_manager.dart';
 
