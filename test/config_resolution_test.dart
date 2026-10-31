@@ -276,6 +276,83 @@ void main() {
       );
     });
 
+    test('parses exes with defaults', () {
+      final config = _from(inno: {
+        'id': validId,
+        'exes': [
+          'tools/a.exe',
+          {
+            'path': 'tools/b.exe',
+            'optional': true,
+            'description': 'Install B',
+            'args': '/S',
+            'status_msg': 'B...',
+            'on_failure': 'abort',
+          },
+          {
+            'source': 'vendor/c.exe',
+            'destination': 'helpers',
+          },
+        ],
+      });
+      expect(config.exes, hasLength(3));
+      expect(config.exes[0].path, 'tools/a.exe');
+      expect(config.exes[0].optional, isFalse);
+      expect(config.exes[0].onFailure.yamlValue, 'continue');
+      expect(config.exes[1].path, 'tools/b.exe');
+      expect(config.exes[1].optional, isTrue);
+      expect(config.exes[1].description, 'Install B');
+      expect(config.exes[1].args, '/S');
+      expect(config.exes[1].statusMsg, 'B...');
+      expect(config.exes[1].onFailure.yamlValue, 'abort');
+      expect(config.exes[2].source, 'vendor/c.exe');
+      expect(config.exes[2].destination, 'helpers');
+      expect(config.exes[2].installRelativePath, r'helpers\c.exe');
+    });
+
+    test('rejects exes entry with both path and source', () {
+      expect(
+        () => _from(inno: {
+          'id': validId,
+          'exes': [
+            {'path': 'a.exe', 'source': 'b.exe'},
+          ],
+        }),
+        throwsA(isA<InnoBundleError>()),
+      );
+    });
+
+    test('rejects optional exe without description', () {
+      expect(
+        () => _from(inno: {
+          'id': validId,
+          'exes': [
+            {'path': 'a.exe', 'optional': true},
+          ],
+        }),
+        throwsA(isA<InnoBundleError>()),
+      );
+    });
+
+    test('rejects invalid on_failure', () {
+      expect(
+        () => _from(inno: {
+          'id': validId,
+          'exes': [
+            {'path': 'a.exe', 'on_failure': 'explode'},
+          ],
+        }),
+        throwsA(isA<InnoBundleError>()),
+      );
+    });
+
+    test('rejects a non-list exes option', () {
+      expect(
+        () => _from(inno: {'id': validId, 'exes': 'a.exe'}),
+        throwsA(isA<InnoBundleError>()),
+      );
+    });
+
     test('rejects a file entry without a path', () {
       expect(
         () => _from(inno: {

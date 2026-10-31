@@ -24,6 +24,8 @@ import 'package:path/path.dart' as p;
 
 import 'package:inno_bundle/models/admin_mode.dart';
 import 'package:inno_bundle/models/config.dart';
+import 'package:inno_bundle/models/exe_entry.dart';
+import 'package:inno_bundle/models/exe_failure_mode.dart';
 import 'package:inno_bundle/models/file_entry.dart';
 import 'package:inno_bundle/models/vcredist_mode.dart';
 import 'package:inno_bundle/utils/cli_logger.dart';
@@ -45,6 +47,12 @@ class ScriptBuilder {
     final parts = relative.split(RegExp(r'[\\/]+')).where((part) => part.isNotEmpty && part != '.');
     return '{app}\\${parts.join('\\')}';
   }
+
+  String _escapePascal(String value) => value.replaceAll("'", "''");
+
+  String _escapeIss(String value) => value.replaceAll('"', '""');
+
+  String _exeTaskName(int index) => 'exerun$index';
 
   /// Generates the `[Setup]` section of the ISS script, containing metadata and
   /// configuration for the installer.
@@ -114,10 +122,18 @@ Type: filesandordirs; Name: "{app}\\*"
 
   /// Generates the `[Tasks]` section, defining additional installation tasks such as creating desktop icons.
   String _tasks() {
-    return '''
+    var section = '''
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
-\n''';
+''';
+    for (var i = 0; i < config.exes.length; i++) {
+      final exe = config.exes[i];
+      if (!exe.optional) continue;
+      final description = _escapeIss(exe.description!);
+      section += 'Name: "${_exeTaskName(i)}"; Description: "$description"; '
+          'GroupDescription: "Additional programs";\n';
+    }
+    return '$section\n';
   }
 
   /// Generates the `[Files]` section, specifying the files and directories to include in the installer.
@@ -150,6 +166,18 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
       final destDir = _innoAppDest(dir.resolvedDestination);
       section += 'Source: "${sourceDir.absolute.path}\\*"; DestDir: "$destDir"; '
           'Flags: ignoreversion recursesubdirs createallsubdirs\n';
+    }
+
+    for (final exe in config.exes) {
+      if (!exe.isBundled) continue;
+      final sourceFile = File(exe.absoluteSource(config.baseDir));
+      if (!sourceFile.existsSync()) {
+        CliLogger.exitError("Required exe source ${sourceFile.path} does not exist.");
+      }
+      final destDirRel = exe.filesDestDirRelative;
+      final destDir = destDirRel.isEmpty ? '{app}' : _innoAppDest(destDirRel);
+      section += 'Source: "${sourceFile.absolute.path}"; DestDir: "$destDir"; '
+          'DestName: "${exe.filesDestName}"; Flags: ignoreversion\n';
     }
 
     // adding optional files from System32 (if they are available),
@@ -204,84 +232,156 @@ Filename: "{app}\\${config.pubspecNameDotExe}"; Description: "{cm:LaunchProgram,
 \n''';
   }
 
-  /// Generates the `[DownloadVcRedist]` section for downloading the Visual C++ Redistributable.
-  /// This section will create a checkbox on the last page of the installer, checked it by default,
-  /// if left checked after user click finish,
-  /// the installer will open default browser and download the Visual C++ Redistributable
-  String _downloadVcRedist() {
-    if (config.vcRedist != VcRedistMode.download) return '';
-    return '''
-; This section will create a checkbox on the last page of the installer, checked it by default,
-; if left checked after user click finish,
-; the installer will open default browser and download the Visual C++ Redistributable
-[Code]
-var
-  RunList: TNewCheckListBox;
-  VCCheckBox: TNewCheckBox;
+  String _exeExecCall(ExeEntry exe) {
+    final rel = exe.installRelativePath;
+    final appFile = _escapePascal('{app}\\$rel');
+    if (exe.isMsi) {
+      final argsSuffix = (exe.args == null || exe.args!.isEmpty) ? '' : ' ${_escapePascal(exe.args!)}';
+      final params = "'/i \"' + ExpandConstant('$appFile') + '\"$argsSuffix'";
+      return "Exec(ExpandConstant('{sys}\\msiexec.exe'), $params, '', "
+          'SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode)';
+    }
+    final args = _escapePascal(exe.args ?? '');
+    return "Exec(ExpandConstant('$appFile'), '$args', '', "
+        'SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode)';
+  }
 
-// Repositions the VCCheckBox relative to the RunList's current position when the window is resized
-procedure OnWizardFormResize(Sender: TObject);
-begin
-  if (VCCheckBox <> nil) and (RunList <> nil) and WizardForm.FinishedPage.Visible then
-  begin
-    // Reposition the checkbox relative to the RunList's current position
-    VCCheckBox.SetBounds(
-      RunList.Left + 4,
-      RunList.Top + 25,
-      VCCheckBox.Width,
-      VCCheckBox.Height
+  String _exeRunBlock(ExeEntry exe, int index) {
+    final rel = exe.installRelativePath;
+    final status = _escapePascal(
+      exe.statusMsg ?? 'Executing $rel...',
     );
-  end;
-end;
+    final taskGuard = exe.optional ? "WizardIsTaskSelected('${_exeTaskName(index)}')" : 'True';
+    final failedMsg = _escapePascal('Executable failed: $rel');
+    final execCall = _exeExecCall(exe);
 
-// Create checkbox on the last page of the installer to download VC Runtime.
-procedure CurPageChanged(CurPageID: Integer);
-begin
-  if CurPageID = wpFinished then
+    if (exe.onFailure == ExeFailureMode.ask) {
+      return '''
+  if $taskGuard then
   begin
-    // The RunList is a TNewCheckListBox that contains checkboxes for [Run] entries
-    // It's created automatically when you have [Run] entries with postinstall flag
-    RunList := WizardForm.RunList;
-    
-    if RunList <> nil then
+    WizardForm.StatusLabel.Caption := '$status';
+    while True do
     begin
-      // Create our custom checkbox below the RunList
-      VCCheckBox := TNewCheckBox.Create(WizardForm);
-      VCCheckBox.Parent := WizardForm.FinishedPage;
-      
-      // Position it below the RunList
-      VCCheckBox.SetBounds(
-        RunList.Left + 4,
-        RunList.Top + 25,
-        RunList.Width,
-        ScaleY(17)
-      );
-      
-      // Set the checkbox properties
-      VCCheckBox.Caption := 'Download and install required Visual C++ runtime (recommended)';
-      VCCheckBox.Checked := True; // Default checked
-      VCCheckBox.Font.Assign(WizardForm.FinishedLabel.Font);
-      
-      // Make sure it's visible
-      VCCheckBox.Visible := True;
-            
-      // Assign the resize event handler
-      WizardForm.OnResize := @OnWizardFormResize;
-    end
+      if not $execCall then
+        ResultCode := -1;
+      if ResultCode = 0 then Break;
+      Response := MsgBox('$failedMsg (exit code ' + IntToStr(ResultCode) + ')' + #13#10 + 'Abort, Retry, or Ignore?', mbError, MB_ABORTRETRYIGNORE);
+      if Response = IDABORT then
+        RaiseException('$failedMsg');
+      if Response = IDIGNORE then Break;
+    end;
   end;
-end;
+''';
+    }
 
-// This runs *after* the user clicks "Finish" on the last page
-procedure CurStepChanged(CurStep: TSetupStep);
-var
-  ErrCode: Integer;
-begin
-  if (CurStep = ssDone) and VCCheckBox.Checked then
+    final failureCheck = exe.onFailure == ExeFailureMode.abort
+        ? '''
+    if ResultCode <> 0 then
+      RaiseException('$failedMsg (exit code ' + IntToStr(ResultCode) + ')');
+'''
+        : '';
+
+    return '''
+  if $taskGuard then
   begin
-      ShellExec('', 'https://aka.ms/vs/17/release/vc_redist.x64.exe', '', '', SW_SHOWNORMAL, ewNoWait, ErrCode);
+    WizardForm.StatusLabel.Caption := '$status';
+    if not $execCall then
+      ResultCode := -1;
+$failureCheck
   end;
-end;
-\n''';
+''';
+  }
+
+  String _runExesCode() {
+    if (config.exes.isEmpty) return '';
+    final buf = StringBuffer();
+    buf.writeln('procedure RunConfiguredExes;');
+    buf.writeln('var');
+    buf.writeln('  ResultCode: Integer;');
+    if (config.exes.any((e) => e.onFailure == ExeFailureMode.ask)) {
+      buf.writeln('  Response: Integer;');
+    }
+    buf.writeln('begin');
+    for (var i = 0; i < config.exes.length; i++) {
+      buf.write(_exeRunBlock(config.exes[i], i));
+    }
+    buf.writeln('end;');
+    buf.writeln();
+    return buf.toString();
+  }
+
+  String _code() {
+    final wantVc = config.vcRedist == VcRedistMode.download;
+    final wantExes = config.exes.isNotEmpty;
+    if (!wantVc && !wantExes) return '';
+
+    final buf = StringBuffer();
+    buf.writeln('[Code]');
+    if (wantVc) {
+      buf.writeln('var');
+      buf.writeln('  RunList: TNewCheckListBox;');
+      buf.writeln('  VCCheckBox: TNewCheckBox;');
+      buf.writeln();
+      buf.writeln('procedure OnWizardFormResize(Sender: TObject);');
+      buf.writeln('begin');
+      buf.writeln('  if (VCCheckBox <> nil) and (RunList <> nil) and WizardForm.FinishedPage.Visible then');
+      buf.writeln('  begin');
+      buf.writeln('    VCCheckBox.SetBounds(');
+      buf.writeln('      RunList.Left + 4,');
+      buf.writeln('      RunList.Top + 25,');
+      buf.writeln('      VCCheckBox.Width,');
+      buf.writeln('      VCCheckBox.Height');
+      buf.writeln('    );');
+      buf.writeln('  end;');
+      buf.writeln('end;');
+      buf.writeln();
+      buf.writeln('procedure CurPageChanged(CurPageID: Integer);');
+      buf.writeln('begin');
+      buf.writeln('  if CurPageID = wpFinished then');
+      buf.writeln('  begin');
+      buf.writeln('    RunList := WizardForm.RunList;');
+      buf.writeln('    if RunList <> nil then');
+      buf.writeln('    begin');
+      buf.writeln('      VCCheckBox := TNewCheckBox.Create(WizardForm);');
+      buf.writeln('      VCCheckBox.Parent := WizardForm.FinishedPage;');
+      buf.writeln('      VCCheckBox.SetBounds(');
+      buf.writeln('        RunList.Left + 4,');
+      buf.writeln('        RunList.Top + 25,');
+      buf.writeln('        RunList.Width,');
+      buf.writeln('        ScaleY(17)');
+      buf.writeln('      );');
+      buf.writeln("      VCCheckBox.Caption := 'Download and install required Visual C++ runtime (recommended)';");
+      buf.writeln('      VCCheckBox.Checked := True;');
+      buf.writeln('      VCCheckBox.Font.Assign(WizardForm.FinishedLabel.Font);');
+      buf.writeln('      VCCheckBox.Visible := True;');
+      buf.writeln('      WizardForm.OnResize := @OnWizardFormResize;');
+      buf.writeln('    end');
+      buf.writeln('  end;');
+      buf.writeln('end;');
+      buf.writeln();
+    }
+
+    if (wantExes) {
+      buf.write(_runExesCode());
+    }
+
+    buf.writeln('procedure CurStepChanged(CurStep: TSetupStep);');
+    if (wantVc) {
+      buf.writeln('var');
+      buf.writeln('  ErrCode: Integer;');
+    }
+    buf.writeln('begin');
+    if (wantExes) {
+      buf.writeln('  if CurStep = ssPostInstall then');
+      buf.writeln('    RunConfiguredExes;');
+    }
+    if (wantVc) {
+      buf.writeln('  if (CurStep = ssDone) and (VCCheckBox <> nil) and VCCheckBox.Checked then');
+      buf.writeln("    ShellExec('', 'https://aka.ms/vs/17/release/vc_redist.x64.exe', '', '', SW_SHOWNORMAL, ewNoWait, ErrCode);");
+    }
+    buf.writeln('end;');
+    buf.writeln();
+    return buf.toString();
   }
 
   (
@@ -334,10 +434,8 @@ Root: HKA; Subkey: "Software\\${name}\\Capability"; ValueType: string; ValueName
 Root: HKA; Subkey: "Software\\RegisteredApplications"; ValueType: string; ValueName: "${name}"; ValueData: "Software\\${name}\\Capability"; Flags: uninsdeletevalue
 ''';
 
-    final removedExtsCommands =
-        config.excludedFileExts.map(_removeOldExtCommand).join('\n');
-    final addedExtsCommands =
-        config.includedFileExts.map(_addExtCommand).join('\n');
+    final removedExtsCommands = config.excludedFileExts.map(_removeOldExtCommand).join('\n');
+    final addedExtsCommands = config.includedFileExts.map(_addExtCommand).join('\n');
 
     return '''
 [Registry]
@@ -352,16 +450,7 @@ $addedExtsCommands
   ///
   /// Does not write to disk — useful for inspection in tests.
   String buildScript() {
-    return scriptHeader +
-        _setup() +
-        _installDelete() +
-        _languages() +
-        _tasks() +
-        _files() +
-        _fileExtsRegistry() +
-        _icons() +
-        _run() +
-        _downloadVcRedist();
+    return scriptHeader + _setup() + _installDelete() + _languages() + _tasks() + _files() + _fileExtsRegistry() + _icons() + _run() + _code();
   }
 
   /// Generates the ISS script file and returns its path.

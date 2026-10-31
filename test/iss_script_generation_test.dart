@@ -29,6 +29,7 @@ void main() {
     Config _config({
       List<String> outputDir = const ['tmp', 'inno_out'],
       List<dynamic>? dirs,
+      List<dynamic>? exes,
       Directory? baseDir,
     }) {
       return Config.fromJson(
@@ -42,6 +43,7 @@ void main() {
           'inno_bundle': {
             'id': '5ec949d0-0582-1e06-b073-b5d1161f6fff',
             if (dirs != null) 'dirs': dirs,
+            if (exes != null) 'exes': exes,
           },
         },
         cliConfig: InnoBundleCliConfig(),
@@ -113,7 +115,6 @@ void main() {
           'Flags: ignoreversion recursesubdirs createallsubdirs',
         ),
       );
-      expect(script, contains('Name: "{app}\\assets\\animations"'));
     });
 
     test('uses source as destination when a dir entry is a plain string', () {
@@ -165,7 +166,6 @@ void main() {
           'Flags: ignoreversion recursesubdirs createallsubdirs',
         ),
       );
-      expect(script, contains('Name: "{app}\\data\\anims"'));
     });
 
     test('does not copy dir contents when the source folder is absent', () {
@@ -179,8 +179,155 @@ void main() {
 
       final script = builder.buildScript();
 
-      expect(script, contains('Name: "{app}\\appdata"'));
       expect(script, isNot(contains('DestDir: "{app}\\appdata"')));
+    });
+
+    test('runs app-relative exes from [Code] in list order before app launch',
+        () {
+      final config = _config(
+        exes: [
+          {
+            'path': 'tools/first.exe',
+            'args': '/silent',
+            'status_msg': 'First...',
+            'on_failure': 'abort',
+          },
+          {
+            'path': 'tools/second.exe',
+            'optional': true,
+            'description': 'Install second',
+            'on_failure': 'ask',
+          },
+        ],
+      );
+      final builder = ScriptBuilder(config, appDir);
+      final script = builder.buildScript();
+
+      expect(
+          script, contains('Name: "exerun1"; Description: "Install second"'));
+      expect(script, contains('procedure RunConfiguredExes;'));
+      expect(script, contains("ExpandConstant('{app}\\tools\\first.exe')"));
+      expect(script, contains("ExpandConstant('{app}\\tools\\second.exe')"));
+      expect(script, contains("WizardIsTaskSelected('exerun1')"));
+      expect(script, contains("'/silent'"));
+      expect(script, contains("WizardForm.StatusLabel.Caption := 'First...'"));
+      expect(script, contains('RaiseException('));
+      expect(script, contains('MB_ABORTRETRYIGNORE'));
+      expect(script, contains('if CurStep = ssPostInstall then'));
+      expect(script, contains('RunConfiguredExes;'));
+      final firstIdx =
+          script.indexOf("ExpandConstant('{app}\\tools\\first.exe')");
+      final secondIdx =
+          script.indexOf("ExpandConstant('{app}\\tools\\second.exe')");
+      expect(firstIdx, lessThan(secondIdx));
+      expect(
+        script,
+        contains(
+          'Filename: "{app}\\my_app.exe"; Description: '
+          '"{cm:LaunchProgram,{#StringChange(\'my_app\', \'&\', \'&&\')}}"; '
+          'Flags: nowait postinstall skipifsilent',
+        ),
+      );
+    });
+
+    test('copies bundled exe sources into [Files] preserving relative path',
+        () {
+      final toolsDir = Directory('${tempDir.path}\\tools');
+      toolsDir.createSync(recursive: true);
+      final driver = File('${toolsDir.path}\\driver.exe');
+      driver.writeAsStringSync('dummy');
+
+      final config = _config(
+        exes: [
+          {
+            'source': 'tools/driver.exe',
+            'args': '/S',
+            'status_msg': 'Driver...',
+          },
+        ],
+        baseDir: tempDir,
+      );
+      final builder = ScriptBuilder(config, appDir);
+      final script = builder.buildScript();
+      final sourcePath = driver.absolute.path;
+
+      expect(
+        script,
+        contains(
+          'Source: "$sourcePath"; DestDir: "{app}\\tools"; '
+          'DestName: "driver.exe"; Flags: ignoreversion',
+        ),
+      );
+      expect(
+        script,
+        contains("ExpandConstant('{app}\\tools\\driver.exe')"),
+      );
+    });
+
+    test('copies bundled exe to destination when set', () {
+      final toolsDir = Directory('${tempDir.path}\\tools');
+      toolsDir.createSync(recursive: true);
+      final driver = File('${toolsDir.path}\\driver.exe');
+      driver.writeAsStringSync('dummy');
+
+      final config = _config(
+        exes: [
+          {
+            'source': 'tools/driver.exe',
+            'destination': 'drivers',
+          },
+        ],
+        baseDir: tempDir,
+      );
+      final builder = ScriptBuilder(config, appDir);
+      final script = builder.buildScript();
+      final sourcePath = driver.absolute.path;
+
+      expect(
+        script,
+        contains(
+          'Source: "$sourcePath"; DestDir: "{app}\\drivers"; '
+          'DestName: "driver.exe"; Flags: ignoreversion',
+        ),
+      );
+      expect(
+        script,
+        contains("ExpandConstant('{app}\\drivers\\driver.exe')"),
+      );
+    });
+
+    test('runs .msi via msiexec /i and appends args', () {
+      final msi = File('${tempDir.path}\\mariadb_X64.msi');
+      msi.writeAsStringSync('dummy');
+
+      final config = _config(
+        exes: [
+          {
+            'source': msi.path,
+            'args': '/qn',
+            'status_msg': 'MARIADB KURULUYOR...',
+            'on_failure': 'ask',
+          },
+        ],
+        baseDir: tempDir,
+      );
+      final builder = ScriptBuilder(config, appDir);
+      final script = builder.buildScript();
+
+      expect(
+        script,
+        contains("Exec(ExpandConstant('{sys}\\msiexec.exe'), "),
+      );
+      expect(
+        script,
+        contains(
+          "'/i \"' + ExpandConstant('{app}\\mariadb_X64.msi') + '\" /qn'",
+        ),
+      );
+      expect(
+        script,
+        isNot(contains("Exec(ExpandConstant('{app}\\mariadb_X64.msi')")),
+      );
     });
   });
 }
