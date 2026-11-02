@@ -34,6 +34,9 @@ inno_bundle_plus:
     - Arabic
   admin: auto
   arch: x64_compatible
+  # Placeholders: {name}, {version}, {arch}, {publisher}.
+  # Quoted on purpose: unquoted braces are YAML syntax and the file fails to parse.
+  outputFilename: "{name}-{version}-Setup"
 
   files:
     - path: msvcp140.dll

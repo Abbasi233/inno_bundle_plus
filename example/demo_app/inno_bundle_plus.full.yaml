@@ -16,6 +16,8 @@ inno_bundle_plus:
     - Arabic
   admin: auto
   arch: x64_compatible
+  # Placeholders: {name}, {version}, {arch}, {publisher}. Quoted: unquoted braces are YAML syntax.
+  outputFilename: "{name}-{version}-Setup"
   vc_redist: download
   file_extensions_associations:
     - .foo

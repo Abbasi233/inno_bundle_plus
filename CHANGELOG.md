@@ -1,3 +1,7 @@
+## 1.0.2
+
+- Add `outputFilename` under the `inno_bundle_plus` section to set the installer file name, without the `.exe` suffix. When omitted, the name is `{name}-{arch}-{version}-Installer`. `{name}` is the app name with spaces, hyphens, and underscores removed and each word capitalized (CamelCase), `{arch}` is `x86_64`, and `{version}` is the resolved app version. When set, `{name}`, `{version}`, `{arch}`, and `{publisher}` in the value are replaced the same way. `{publisher}` is the publisher name with that same capitalization. Other text is kept. The value must be a quoted string: without quotes, `{...}` is YAML syntax and the file fails to parse. `{name}-{version}-Setup` for `demo_app` at `1.0.0` becomes `DemoApp-1.0.0-Setup.exe`.
+
 ## 1.0.1
 - refactor for lints
 

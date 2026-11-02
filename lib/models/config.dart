@@ -52,6 +52,9 @@ class Config {
   /// A description of the app being packaged.
   final String description;
 
+  /// The filename of the installer.
+  final String? outputFilename;
+
   /// The app's version.
   final String version;
 
@@ -158,6 +161,7 @@ class Config {
     required this.pubspecName,
     required this.name,
     required this.description,
+    required this.outputFilename,
     required this.version,
     required this.publisher,
     required this.url,
@@ -242,6 +246,8 @@ class Config {
           "`${inno['name']}` is not a valid file name.");
     }
     final String name = inno['name'] ?? pubspecName;
+
+    final outputFilename = inno['outputFilename'] as String?;
 
     if ((cliConfig.appVersion ?? inno['version'] ?? json['version']) is! String) {
       throw InnoBundlePlusError("version attribute is missing from $configName.");
@@ -420,6 +426,7 @@ class Config {
       pubspecName: pubspecName,
       name: name,
       description: description,
+      outputFilename: outputFilename,
       version: version,
       publisher: publisher,
       url: url,

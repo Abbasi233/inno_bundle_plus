@@ -43,7 +43,25 @@ Text stored as the application description. When omitted, the `description` from
 
 ## Version (`version`)
 
-Version written into the installer file name and the Windows uninstall entry. `inno_bundle_plus.version` overrides the pubspec version. When both are absent, the pubspec `version` is used.
+Version written into the Windows uninstall entry. It is also part of the installer file name when `outputFilename` is omitted. `inno_bundle_plus.version` overrides the pubspec version. When both are absent, the pubspec `version` is used.
+
+## Installer file name (`outputFilename`)
+
+Base name of the setup executable, without `.exe` suffix. When omitted, the file is `{name}-{arch}-{version}-Installer.exe`.
+
+When set, only these placeholders are replaced. Any other text is kept. Write the value as a quoted string. Without quotes, `{...}` is YAML syntax and the file fails to parse.
+
+- `{name}` — app name with spaces, hyphens, and underscores removed and each word capitalized (CamelCase)
+- `{version}` — the resolved app version
+- `{arch}` — `x86_64`
+- `{publisher}` — publisher name, capitalized like `{name}`
+
+```yaml
+inno_bundle_plus:
+  outputFilename: "{name}-{version}-Setup"
+```
+
+For an app named `demo_app` at version `1.0.0`, that value produces `DemoApp-1.0.0-Setup.exe`. The omitted default for the same app is `DemoApp-x86_64-1.0.0-Installer.exe`.
 
 ## Publisher (`publisher`)
 

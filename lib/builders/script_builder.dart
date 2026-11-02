@@ -89,7 +89,7 @@ DefaultDirName={autopf}\\${config.name}
 PrivilegesRequired=${config.admin == AdminMode.nonAdmin ? 'lowest' : 'admin'}
 PrivilegesRequiredOverridesAllowed=${config.admin == AdminMode.auto ? "dialog commandline" : ""}
 OutputDir=$outputDir
-OutputBaseFilename=${camelCase(config.name)}-${config.arch.cpu}-${config.version}-Installer
+OutputBaseFilename=${_generateOutputFilename()}
 SetupIconFile=$installerIcon
 Compression=lzma2/max
 SolidCompression=yes
@@ -101,6 +101,25 @@ DisableProgramGroupPage=auto
 ${config.signTool != null ? config.signTool?.toInnoCode() : ""}
 ${config.includedFileExts.isNotEmpty || config.excludedFileExts.isNotEmpty ? "ChangesAssociations=yes" : ""}
 \n''';
+  }
+
+  /// Installer file name. Without [Config.outputFilename], `{Name}-{arch}-{version}-Installer`. Otherwise `{name}`, `{version}`, `{arch}`, and `{publisher}` in that value are replaced.
+  String _generateOutputFilename() {
+    if (config.outputFilename == null) return '${camelCase(config.name)}-${config.arch.cpu}-${config.version}-Installer';
+
+    final placeholderMap = {
+      'name': camelCase(config.name),
+      'version': config.version,
+      'arch': config.arch.cpu,
+      'publisher': camelCase(config.publisher),
+    };
+
+    String resolvedOutputFilename = config.outputFilename!;
+    for (var key in placeholderMap.keys) {
+      resolvedOutputFilename = resolvedOutputFilename.replaceAll('{$key}', placeholderMap[key]!);
+    }
+
+    return resolvedOutputFilename;
   }
 
   /// Generates the `[InstallDelete]` section for specifying files to delete during uninstallation.
